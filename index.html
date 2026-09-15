@@ -6,6 +6,13 @@
 <meta name="description" content="Converts an IIM Ahmedabad Application Rating advantage into CAT percentile points under the new PGP 2027-29 policy and CAT raw marks under the old 2026-28 policy. Built by Devansh Gohil.">
 <meta name="author" content="Devansh Gohil">
 <title>The Exchange Rate</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Exchange Rate — how much CAT does your marksheet buy?">
+<meta property="og:description" content="IIM Ahmedabad's new PGP 2027–29 shortlisting formula, worked out: what each Application Rating point is worth in CAT percentile, against last year's rules.">
+<meta property="og:url" content="https://devanshgohil07.github.io/iima-new-admission-policy-impact/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0d1012">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d1012'/%3E%3Cpath d='M6 11h20' stroke='%23ff5a52' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M6 21h20' stroke='%2335c46a' stroke-width='3' stroke-linecap='round' stroke-dasharray='5 3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
@@ -230,6 +237,24 @@ footer .fby{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
   padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
 footer .fby .who{font-size:14px;color:var(--ink);font-weight:600;letter-spacing:-.01em}
 footer p{max-width:74ch;margin:0 0 11px}
+.lead{font-size:15px;color:var(--ink-2);max-width:72ch;margin:0 0 6px;line-height:1.65}
+.lead b{color:var(--ink)}
+details.more,details.adv{border:1px solid var(--line);margin:18px 0 0;background:var(--bg)}
+details.more>summary,details.adv>summary{cursor:pointer;padding:13px 16px;font-size:13px;font-weight:600;color:var(--ink-2);
+  list-style:none;display:flex;gap:6px 12px;align-items:baseline;flex-wrap:wrap}
+details>summary::-webkit-details-marker{display:none}
+details.more>summary::before,details.adv>summary::before{content:"+";font-family:var(--mono);color:var(--muted);width:10px;flex:none}
+details[open].more>summary::before,details[open].adv>summary::before{content:"\2212"}
+details[open]>summary{border-bottom:1px solid var(--line)}
+details>summary:hover{color:var(--ink)}
+details>summary .muted{font-weight:400;font-size:12px}
+details .tw,details .cols2{border:0}
+table.compact{min-width:0}
+.rail input[type=number]{width:78px;max-width:78px;padding:3px 6px;font-size:12.5px}
+.rail .gap{font-size:12px;color:var(--ink-2);white-space:nowrap}
+.rail .gap b{font-size:13px}
+.hint{font-size:12px!important}
+@media(max-width:520px){ .rail input[type=range]{display:none} .rail .op{flex:0 1 auto;min-width:0} }
 .skip{position:absolute;left:-9999px}
 .skip:focus{left:8px;top:8px;position:fixed;z-index:99;background:var(--ink);color:var(--bg);padding:9px 13px;border-radius:2px}
 @media(prefers-reduced-motion:no-preference){.vc .v,.rate .v,.arline b{transition:color .18s ease}}
@@ -271,17 +296,17 @@ footer p{max-width:74ch;margin:0 0 11px}
     <nav class="chapnav" role="tablist" aria-label="Chapters">
       <button role="tab" id="tab1" aria-controls="ch1" aria-selected="true"><span class="n">1</span>The exchange rate</button>
       <button role="tab" id="tab2" aria-controls="ch2" aria-selected="false"><span class="n">2</span>The two profiles</button>
-      <button role="tab" id="tab3" aria-controls="ch3" aria-selected="false"><span class="n">3</span>What percentile you need</button>
+      <button role="tab" id="tab3" aria-controls="ch3" aria-selected="false"><span class="n">3</span>Closing the gap</button>
       <button role="tab" id="tab4" aria-controls="ch4" aria-selected="false"><span class="n">4</span>Where the line fell</button>
-      <button role="tab" id="tab5" aria-controls="ch5" aria-selected="false"><span class="n">5</span>What the levers don&rsquo;t show</button>
+      <button role="tab" id="tab5" aria-controls="ch5" aria-selected="false"><span class="n">5</span>Hidden effects</button>
       <button role="tab" id="tab6" aria-controls="ch6" aria-selected="false"><span class="n">6</span>Method &amp; notes</button>
     </nav>
     <div class="rail" id="rail">
-      <span class="grp"><span class="k">You</span><b id="railMeN">&mdash;</b><span class="k">new</span><b id="railMeO">&mdash;</b><span class="k">old</span></span>
-      <span class="grp"><span class="k">Rival</span><b id="railRvN">&mdash;</b><span class="k">new</span><b id="railRvO">&mdash;</b><span class="k">old</span></span>
-      <span class="grp"><span class="k">Category</span><b id="railCat" style="font-family:var(--sans);font-size:12px">&mdash;</b></span>
-      <span class="op"><span class="k">CAT pct</span><b id="railOp">&mdash;</b>
-        <input type="range" id="railOpR" min="85" max="99.9" step="0.05" aria-label="Your CAT percentile, the operating point"></span>
+      <span class="grp"><span class="k">AR</span><span class="k">You</span><b id="railMeN">&mdash;</b><span class="k">Rival</span><b id="railRvN">&mdash;</b></span>
+      <span class="gap" id="railGap">&mdash;</span>
+      <span class="op"><label class="k" for="railOpN" id="railOpK">Your CAT percentile</label>
+        <input type="number" id="railOpN" step="0.05" min="85" max="99.99">
+        <input type="range" id="railOpR" min="85" max="99.9" step="0.05" aria-label="CAT percentile"></span>
     </div>
   </div>
 </div>
@@ -293,7 +318,7 @@ footer p{max-width:74ch;margin:0 0 11px}
 <section class="chapter" id="ch1" role="tabpanel" aria-labelledby="tab1" tabindex="-1">
   <div class="chead">
     <h2>1 &middot; The exchange rate</h2>
-    <p>Your marksheet is scored out of 38. This is what one of those points is worth in CAT terms.</p>
+    <p>IIMA scores your marksheet out of 38 and calls it your Application Rating, or AR. This is what one AR point is worth in CAT terms.</p>
   </div>
 
   <div class="rates">
@@ -310,16 +335,17 @@ footer p{max-width:74ch;margin:0 0 11px}
       <div class="u">Fixed in <em>marks</em> &mdash; but marks get harder to come by the higher you go, so the same advantage quietly shrank as you climbed.</div>
     </div>
     <div class="rate neu">
-      <div class="k"><span class="tag flat">Your rating</span></div>
+      <div class="k"><span class="tag flat">Your AR</span></div>
       <div class="v" id="rateAR">&mdash;</div>
       <div class="unit" id="rateARu">your marksheet score, out of 38</div>
       <div class="u" id="rateARn">&nbsp;</div>
     </div>
   </div>
+  <p style="margin:-14px 0 30px"><button class="btn" type="button" id="goProfile">Enter your own marks &rarr;</button></p>
 
   <div class="prose">
-    <p>Both sets of rules split the decision the same way: <b>35&nbsp;% your marksheet, 65&nbsp;% your CAT</b>. The marksheet half &mdash; IIMA calls it the Application Rating &mdash; is built from the same five things either way: Class&nbsp;10, Class&nbsp;12, your degree, full-time work experience, and gender. Maximum 38.</p>
-    <p>What changed is the other 65&nbsp;%. The old rules took your <em>raw score</em> out of 204. The new rules take your <em>percentile</em> out of 100. That is the whole story, and here is why it matters: you can always score more marks, but you cannot score more than 100th percentile. Once you are past the qualifying line there is very little CAT left to win &mdash; so the marksheet, which has no such ceiling, quietly becomes the thing that decides it.</p>
+    <p>Both sets of rules rank candidates on one composite score, split the same way: <b>35&nbsp;% your marksheet, 65&nbsp;% your CAT</b>. The marksheet half &mdash; the AR &mdash; is built from the same five things either way: Class&nbsp;10, Class&nbsp;12, your degree, full-time work experience, and gender. Maximum 38.</p>
+    <p>What changed is the other 65&nbsp;%. The old rules took your <em>raw score</em> out of 204. The new rules take your <em>percentile</em> out of 100. That is the whole story, and here is why it matters: you can always score more marks, but you cannot score more than 100th percentile. Once you are past the qualifying line there is very little CAT left to win &mdash; only the gap between your category&rsquo;s floor and 100 &mdash; while AR still spreads candidates across many points. So the marksheet quietly becomes the thing that decides it.</p>
     <p>The scoring tables changed too, and far more quietly. Your degree used to be marked against one of five tables, picked by what you studied; Class&nbsp;12 against one of three, picked by your stream. Now everything is marked against a single table. For most backgrounds that means the same marksheet is simply worth fewer points than it was last year. Nobody announced it as a cut, but that is what it is.</p>
   </div>
 
@@ -347,7 +373,7 @@ footer p{max-width:74ch;margin:0 0 11px}
       <label class="f"><span class="lb">Class 12 %</span><input type="number" id="m12" step="0.01" min="0" max="100"></label>
       <label class="f"><span class="lb">Class 12 stream</span>
         <select id="mStream"><option>Science</option><option>Commerce</option><option>Arts</option></select>
-        <span class="hint">Old policy only &mdash; the new common table ignores stream entirely.</span></label>
+        <span class="hint">Old policy only &mdash; the new scoring table ignores stream entirely.</span></label>
       <label class="f"><span class="lb">Bachelor&rsquo;s %</span><input type="number" id="mUG" step="0.01" min="0" max="100"></label>
       <label class="f"><span class="lb">Old-policy academic category</span>
         <select id="mAC">
@@ -366,7 +392,7 @@ footer p{max-width:74ch;margin:0 0 11px}
         <span class="hint">Sets the published CAT percentile floor you must clear, and the cut line you are measured against in chapter&nbsp;4.</span></label>
 
       <div style="margin-top:15px;padding-top:14px;border-top:1px solid var(--line)">
-        <div class="eyebrow" style="margin-bottom:10px">Which levers are still live</div>
+        <div class="eyebrow" style="margin-bottom:10px">What can still change</div>
         <label class="chk"><input type="checkbox" id="mUgLive"><span>Bachelor&rsquo;s aggregate is still provisional &mdash; later marksheets can move it</span></label>
         <label class="chk"><input type="checkbox" id="mWxLive"><span>Work experience can still accrue before the form closes</span></label>
         <p class="hint" style="font-size:11px;color:var(--muted);margin:4px 0 0">Class&nbsp;10 and Class&nbsp;12 are final for anyone eligible to apply, so they are always shown as locked.</p>
@@ -375,14 +401,17 @@ footer p{max-width:74ch;margin:0 0 11px}
       <div class="arline">
         <span class="cell n"><span class="k">AR &mdash; new</span><b id="arMeNew">&mdash;</b></span>
         <span class="cell o"><span class="k">AR &mdash; old</span><b id="arMeOld">&mdash;</b></span>
-        <span class="cell d"><span class="k">Rewrite</span><b id="arMeDelta">&mdash;</b></span>
+        <span class="cell d"><span class="k">Change</span><b id="arMeDelta">&mdash;</b></span>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-h">
         <span class="t">Rival profile</span>
-        <button class="btn" type="button" id="mirror">Mirror my profile</button>
+        <span style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+          <select id="rvLoad" aria-label="Load a rival profile"></select>
+          <button class="btn" type="button" id="mirror">Mirror my profile</button>
+        </span>
       </div>
       <label class="f"><span class="lb">Class 10 %</span><input type="number" id="r10" step="0.01" min="0" max="100"></label>
       <label class="f"><span class="lb">Class 12 %</span><input type="number" id="r12" step="0.01" min="0" max="100"></label>
@@ -402,44 +431,11 @@ footer p{max-width:74ch;margin:0 0 11px}
       <label class="f"><span class="lb">Full-time work experience (months)</span><input type="number" id="rWx" step="1" min="0" max="120"></label>
       <label class="f"><span class="lb">Gender</span>
         <select id="rGen"><option value="m">Male &mdash; 0 pts</option><option value="f">Non-male &mdash; 3 pts</option></select></label>
-      <label class="f"><span class="lb">Rival&rsquo;s discipline advantage</span><input type="number" id="discR" step="0.01" min="0.8" max="1.25"></label>
-      <input type="range" id="discRR" min="0.85" max="1.2" step="0.005" aria-label="Rival discipline advantage ratio">
-      <p class="hint" style="font-size:11px;color:var(--muted);margin:2px 0 12px;line-height:1.45">New policy only. Ratio of <em>your</em> discipline&rsquo;s top-1&nbsp;% divisor to the rival&rsquo;s. Above 1 means their discipline is the softer pool. IIMA has never published these divisors &mdash; 1.00 assumes you sit in the same one.</p>
-
       <div class="arline">
         <span class="cell n"><span class="k">AR &mdash; new</span><b id="arRivalNew">&mdash;</b></span>
         <span class="cell o"><span class="k">AR &mdash; old</span><b id="arRivalOld">&mdash;</b></span>
-        <span class="cell d"><span class="k">Rewrite</span><b id="arRivalDelta">&mdash;</b></span>
+        <span class="cell d"><span class="k">Change</span><b id="arRivalDelta">&mdash;</b></span>
       </div>
-    </div>
-  </div>
-
-  <div class="sub-h">Quick changes to the rival</div>
-  <div class="chips" id="presets"></div>
-
-  <div class="sub-h">Comparison settings</div>
-  <div class="cols2">
-    <div class="panel">
-      <label class="f"><span class="lb">Your CAT percentile &mdash; the operating point</span><input type="number" id="opPct" step="0.05" min="85" max="99.99"></label>
-      <input type="range" id="opPctR" min="85" max="99.9" step="0.05" aria-label="Your CAT percentile, the operating point">
-      <p class="hint" style="font-size:11px;color:var(--muted);margin:3px 0 14px;line-height:1.45">Irrelevant to the new policy, which is linear in percentile. It decides everything on the old side, because marks and percentile trade at wildly different rates at the 90th than at the 99.5th.</p>
-
-      <label class="f"><span class="lb">Old-policy CAT curve</span>
-        <select id="curveSel">
-          <option value="2024">CAT 2024</option>
-          <option value="2023">CAT 2023</option>
-          <option value="2022">CAT 2022</option>
-          <option value="2025mean">CAT 2025 &mdash; IMS and Cracku averaged</option>
-          <option value="2025ims">CAT 2025 &mdash; IMS estimate</option>
-          <option value="2025cracku">CAT 2025 &mdash; Cracku estimate</option>
-          <option value="2025p">CAT 2025 &mdash; proxy from 2023 &amp; 2024</option>
-        </select>
-        <span class="hint">2022&ndash;24 are built from real slot-wise score calculators. Nobody publishes actual CAT-2025 scorecards, so 2025 is an estimate either way &mdash; the default averages the two coaching houses that published full tables. Provenance is printed under the chart.</span></label>
-    </div>
-    <div class="panel">
-      <label class="f"><span class="lb">Top-50 AR average, 2027&ndash;29 &mdash; unpublished</span><input type="number" id="arDiv" step="0.5" min="30" max="38"></label>
-      <input type="range" id="arDivR" min="34" max="38" step="0.5" aria-label="Top-50 AR average for 2027-29">
-      <p class="hint" style="font-size:11px;color:var(--muted);margin:3px 0 0;line-height:1.5">IIMA published <b>35</b> for 2024&ndash;26, <b>37</b> for 2025&ndash;27 and <b>38</b> for 2026&ndash;28. The maximum was 38 in all three years, so in two of them the top fifty sat <em>below</em> the maximum. That 34&ndash;38 range puts the rate between <b>1.417</b> and <b>1.584</b> percentile points per AR point &mdash; an <b>12&nbsp;%</b> band on every new-policy figure on this page. And the rewrite itself pushes this number <em>down</em>: see chapter&nbsp;5. Only the new policy uses it; the old-policy card stays pinned to the published 38.</p>
     </div>
   </div>
 
@@ -447,44 +443,29 @@ footer p{max-width:74ch;margin:0 0 11px}
   <p class="note" style="margin:0 0 14px" id="verdictLead">&nbsp;</p>
   <div class="verdict">
     <div class="vc n">
-      <div class="k"><span class="tag new">New</span><span class="kt">Percentile you must make up</span></div>
+      <div class="k"><span class="tag new">New rules</span><span class="kt">Rival&rsquo;s head start</span></div>
       <div class="v" id="vNew">&mdash;</div>
       <div class="n2" id="vNewN">&nbsp;</div>
     </div>
     <div class="vc o">
-      <div class="k"><span class="tag old">Old</span><span class="kt">Marks you must make up</span></div>
-      <div class="v" id="vOldM">&mdash;</div>
-      <div class="n2" id="vOldMN">&nbsp;</div>
-    </div>
-    <div class="vc o">
-      <div class="k"><span class="tag old">Old</span><span class="kt">The same gap, in percentile</span></div>
+      <div class="k"><span class="tag old">Last year</span><span class="kt">Same head start, old rules</span></div>
       <div class="v" id="vOldP">&mdash;</div>
       <div class="n2" id="vOldPN">&nbsp;</div>
     </div>
-    <div class="vc">
-      <div class="k"><span class="tag flat">New &divide; old</span><span class="kt">How much worse it got</span></div>
-      <div class="v" id="vAmp">&mdash;</div>
-      <div class="n2" id="vAmpN">&nbsp;</div>
-    </div>
     <div class="vc n">
-      <div class="k"><span class="tag new">New</span><span class="kt">What you need to draw level</span></div>
+      <div class="k"><span class="tag new">New rules</span><span class="kt">Rival needs this to tie you</span></div>
       <div class="v" id="vBE">&mdash;</div>
       <div class="n2" id="vBEN">&nbsp;</div>
     </div>
   </div>
+  <p class="note">Head starts are in CAT percentile points; the tying score is a percentile. All three use the percentile in the top bar, and assume the rival is in your reservation category.</p>
 
-  <div class="sub-h">Why the same advantage is worth more now</div>
-  <figure><div id="chart"></div></figure>
-  <div class="legend">
-    <span><svg width="26" height="8" aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="#ff5a52" stroke-width="2.4"/></svg><b class="isnew" style="color:var(--new)">Solid</b>&nbsp;&mdash; new policy, flat by construction</span>
-    <span><svg width="26" height="8" aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="#35c46a" stroke-width="2.4" stroke-dasharray="6 4"/></svg><b class="isold" style="color:var(--old)">Dashed</b>&nbsp;&mdash; old policy, collapses as the curve steepens</span>
-    <span><svg width="26" height="8" aria-hidden="true"><line x1="13" y1="0" x2="13" y2="8" stroke="#8b969b" stroke-width="1.5" stroke-dasharray="2 2"/></svg>Your operating point</span>
-  </div>
-  <p class="note" id="chartNote"></p>
-  <p class="note" id="curveQuality"></p>
+  <div class="sub-h">Does the head start fade as you score higher?</div>
+  <div class="tw"><table id="headTable" class="compact"></table></div>
+  <p class="note" id="headNote"></p>
 
   <div class="sub-h">Realistic rivals</div>
-  <p class="note" style="margin:0 0 12px">Complete people, not single changes. Click any row to load it into the rival panel.</p>
+  <p class="note" style="margin:0 0 12px">Complete people, not single changes, compared with your profile. Click a row to load it as the rival.</p>
   <div class="tw">
     <table id="archTable">
       <thead>
@@ -498,28 +479,70 @@ footer p{max-width:74ch;margin:0 0 11px}
           <th>Rival profile</th>
           <th class="gnew">AR</th><th class="gnew">Percentile gap</th>
           <th class="gold">AR</th><th class="gold">Marks gap</th>
-          <th class="gold">Old pct gap</th><th>Verdict</th>
+          <th class="gold">Same gap in pct</th><th>Verdict</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
   </div>
-  <p class="note">Gap is measured against your profile at your operating percentile. A negative number means you lead them on Application Rating.</p>
+  <p class="note">Positive means the rival is ahead of you; negative means you are. Descriptions read Class&nbsp;10 / Class&nbsp;12 / degree / work experience, and every rival is assumed to be in your reservation category. <b>CAT can&rsquo;t close it</b> means the head start is bigger than the room between your percentile and 100: if the rival matches your score, no score of yours overtakes them. Last year&rsquo;s gap depends on the percentile in the top bar.</p>
+
+  <details class="adv" id="advanced">
+    <summary>Advanced assumptions <span class="muted">The defaults are reasonable. Change these to test how sensitive the numbers are.</span></summary>
+    <div class="cols2">
+      <div class="panel">
+        <label class="f"><span class="lb">Last year&rsquo;s CAT score curve</span>
+          <select id="curveSel">
+            <option value="2025mean">CAT 2025 &mdash; IMS and Cracku averaged</option>
+            <option value="2025ims">CAT 2025 &mdash; IMS estimate</option>
+            <option value="2025cracku">CAT 2025 &mdash; Cracku estimate</option>
+            <option value="2025p">CAT 2025 &mdash; proxy from 2023 &amp; 2024</option>
+            <option value="2024">CAT 2024</option>
+            <option value="2023">CAT 2023</option>
+            <option value="2022">CAT 2022</option>
+          </select>
+          <span class="hint">Used only for last year&rsquo;s rules, which counted raw marks and so need a marks-to-percentile conversion. The new rules use percentile directly and ignore this.</span></label>
+        <p class="note" id="curveQuality" style="margin-top:4px"></p>
+      </div>
+      <div class="panel">
+        <label class="f"><span class="lb">Top-50 AR average, 2027&ndash;29 &mdash; unpublished</span><input type="number" id="arDiv" step="0.5" min="30" max="38"></label>
+        <input type="range" id="arDivR" min="34" max="38" step="0.5" aria-label="Top-50 AR average for 2027-29">
+        <p class="hint" style="font-size:11px;color:var(--muted);margin:3px 0 0;line-height:1.5">The new formula divides your AR by the average AR of the top 50 applicants. IIMA published <b>35</b> for 2024&ndash;26, <b>37</b> for 2025&ndash;27 and <b>38</b> for 2026&ndash;28, but not the 2027&ndash;29 figure. The 34&ndash;38 range puts one AR point between <b>1.417</b> and <b>1.584</b> percentile points, a 12&nbsp;% band on every new-rules figure. The new table should push this number <em>down</em>: see chapter&nbsp;5.</p>
+
+      </div>
+    </div>
+  </details>
 </section>
 
-<!-- ══════════ 3 · ONE VARIABLE AT A TIME ══════════ -->
+<!-- ══════════ 3 · CLOSING THE GAP ══════════ -->
 <section class="chapter" id="ch3" role="tabpanel" aria-labelledby="tab3" tabindex="-1" hidden>
   <div class="chead">
-    <h2>3 &middot; What percentile do you actually need?</h2>
-    <p>Every row is the same person as you, with exactly one thing changed. Pick who you know the score for, and the table tells you what the other one has to get to draw level.</p>
+    <h2>3 &middot; Closing the gap</h2>
+    <p>Two practical questions. What can you still change about your own AR, and what is it worth? And when a rival has a better marksheet, what CAT score does it take to tie?</p>
   </div>
 
+  <div class="sub-h">Your AR, band by band</div>
+  <p class="note" style="margin:0 0 12px">The table works in steps, not slopes. Extra marks inside a band earn nothing; one mark across a boundary is worth between <span id="bandLo">1.4</span> and <span id="bandHi">4.3</span> CAT percentile points. What matters is which side of a line you are on, and whether that line can still move.</p>
+  <div class="tw">
+    <table id="bandTable">
+      <thead><tr>
+        <th>Input</th><th>Your value</th><th>Band</th><th>AR points</th>
+        <th>Next band</th><th>Distance</th><th class="gnew">Worth in CAT pct</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note" id="bandNote"></p>
+  <div class="callout" style="margin-top:16px">
+    <h4>Fixed versus still changeable</h4>
+    <div class="body" id="leverBody"></div>
+  </div>
+
+  <div class="sub-h">What a rival&rsquo;s better marksheet costs you</div>
   <div class="modebar">
-    <span class="modelab">I know the score for</span>
-    <button class="chip" type="button" id="anchorMe" aria-pressed="true">Me</button>
-    <button class="chip" type="button" id="anchorRival" aria-pressed="false">The rival</button>
-    <label class="f inline"><span class="lb" id="anchorLabel">My CAT percentile</span>
-      <input type="number" id="anchorPct" step="0.05" min="50" max="99.99"></label>
+    <span class="modelab">Whose CAT percentile is in the top bar?</span>
+    <button class="chip" type="button" id="anchorMe" aria-pressed="true">Mine</button>
+    <button class="chip" type="button" id="anchorRival" aria-pressed="false">The rival&rsquo;s</button>
   </div>
   <p class="note" id="equivLead" style="margin:0 0 14px"></p>
 
@@ -529,14 +552,13 @@ footer p{max-width:74ch;margin:0 0 11px}
         <tr class="grouphead">
           <th></th><th></th>
           <th colspan="2"><span class="tag new">New &middot; 2027&ndash;29</span></th>
-          <th colspan="2"><span class="tag old">Old &middot; 2026&ndash;28</span></th>
+          <th><span class="tag old">Old &middot; 2026&ndash;28</span></th>
         </tr>
         <tr>
-          <th>One thing changed</th>
+          <th>The rival is you, except&hellip;</th>
           <th>AR gap<br><span class="thsub">new / old</span></th>
-          <th class="gnew" id="hNewEq">Draws level at</th>
+          <th class="gnew" id="hNewEq">They need to tie</th>
           <th class="gnew">Head start</th>
-          <th class="gold" id="hOldEq">Draws level at</th>
           <th class="gold">Head start</th>
         </tr>
       </thead>
@@ -544,74 +566,62 @@ footer p{max-width:74ch;margin:0 0 11px}
     </table>
   </div>
   <p class="note" id="equivNote"></p>
-
-  <div class="sub-h">Distance to the next band</div>
-  <p class="note" style="margin:0 0 12px">The tables work in steps, not slopes. Extra marks inside a band earn you nothing at all &mdash; but a single mark across a boundary is worth two to four CAT percentile points. Everything hangs on which side of a line you landed.</p>
-  <div class="tw">
-    <table id="bandTable">
-      <thead><tr>
-        <th>Input</th><th>Your value</th><th>Band</th><th>Points</th>
-        <th>Next band</th><th>Needed</th><th class="gnew">Worth (new)</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-  <p class="note" id="bandNote"></p>
 </section>
 
 <!-- ══════════ 4 · WHERE THE LINE FELL ══════════ -->
 <section class="chapter" id="ch4" role="tabpanel" aria-labelledby="tab4" tabindex="-1" hidden>
   <div class="chead">
     <h2>4 &middot; Where the line actually fell</h2>
-    <p>IIMA published the exact score the last cut-off fell at, for every category. Working backwards from those real numbers turns everything above into something you can check, instead of a ratio quoted at a percentile somebody chose.</p>
+    <p>IIMA published the exact score at which last year&rsquo;s shortlist was cut, for every category. Running your marksheet against those real lines shows what the new scoring table alone would have cost you.</p>
   </div>
 
-  <div class="tw">
-    <table id="cutTable">
-      <thead>
-        <tr class="grouphead">
-          <th></th><th></th><th></th>
-          <th colspan="2"><span class="tag old">At your OLD rating</span></th>
-          <th colspan="2"><span class="tag new">At your NEW rating</span></th>
-          <th></th>
-        </tr>
-        <tr>
-          <th>Category</th>
-          <th>CAT floor</th>
-          <th>Published min CS</th>
-          <th class="gold">Marks needed</th><th class="gold">&asymp; pct</th>
-          <th class="gnew">Marks needed</th><th class="gnew">&asymp; pct</th>
-          <th>Cost of the rewrite</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <p class="lead" id="cutLead"></p>
+
+  <details class="more">
+    <summary>All ten categories</summary>
+    <div class="tw">
+      <table id="cutTable">
+        <thead>
+          <tr class="grouphead">
+            <th></th><th></th><th></th>
+            <th colspan="2"><span class="tag old">Old-table AR</span></th>
+            <th colspan="2"><span class="tag new">New-table AR</span></th>
+            <th></th>
+          </tr>
+          <tr>
+            <th>Category</th>
+            <th>CAT floor</th>
+            <th>Last year&rsquo;s cut-off</th>
+            <th class="gold">Marks needed</th><th class="gold">&asymp; pct</th>
+            <th class="gnew">Marks needed</th><th class="gnew">&asymp; pct</th>
+            <th>Extra pct needed</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
   <p class="note" id="cutNote"></p>
-  <p class="note">CAT floor is the published overall percentile cut-off (PT). Identical in both regimes: Table&nbsp;1 of the 2026&ndash;28 shortlisting criteria and Table&nbsp;4 of the 2027&ndash;29 admission procedure carry the same figures. It is a gate, not a score &mdash; clearing it only makes you eligible to be ranked.</p>
+  <p class="note">CAT floor is the published minimum overall percentile for each category, identical under both sets of rules (Table&nbsp;1 of the 2026&ndash;28 shortlisting criteria, Table&nbsp;4 of the 2027&ndash;29 admission procedure). It is a gate, not a score: clearing it only makes you eligible to be ranked.</p>
 </section>
 
-<!-- ══════════ 5 · WHAT THE LEVERS DON'T SHOW ══════════ -->
+<!-- ══════════ 5 · HIDDEN EFFECTS ══════════ -->
 <section class="chapter" id="ch5" role="tabpanel" aria-labelledby="tab5" tabindex="-1" hidden>
   <div class="chead">
-    <h2>5 &middot; What the levers don&rsquo;t show</h2>
-    <p>Four effects of the rewrite that no single-variable comparison captures. The last one is the one nobody is talking about.</p>
+    <h2>5 &middot; What a side-by-side comparison doesn&rsquo;t show</h2>
+    <p>Three effects of the new rules that only appear when you step back from two candidates. The last one is the one nobody is talking about.</p>
   </div>
   <div class="calls">
     <div class="callout">
-      <h4><span class="n">1</span>The Application Rating now outweighs CAT above the cut-off.</h4>
+      <h4><span class="n">1</span>Above the qualifying line, AR can outweigh CAT.</h4>
       <div class="body" id="domBody"></div>
     </div>
     <div class="callout">
-      <h4><span class="n">2</span><span id="acHeadline">The common table rewrote what your degree is worth.</span></h4>
+      <h4><span class="n">2</span><span id="acHeadline">The new scoring table rewrote what your degree is worth.</span></h4>
       <div class="body" id="acBody"></div>
     </div>
     <div class="callout">
-      <h4><span class="n">3</span>Most of your rating was decided years ago.</h4>
-      <div class="body" id="leverBody"></div>
-    </div>
-    <div class="callout">
-      <h4><span class="n">4</span><span id="divHeadline">Your rating fell &mdash; but so did the number it gets divided by.</span></h4>
+      <h4><span class="n">3</span><span id="divHeadline">Your AR fell &mdash; but so did the number it gets divided by.</span></h4>
       <div class="body" id="divisorBody"></div>
     </div>
   </div>
@@ -634,7 +644,7 @@ footer p{max-width:74ch;margin:0 0 11px}
     <p><b>Old.</b> Class&nbsp;10 used the same table. Class&nbsp;12 varied by stream and bachelor&rsquo;s by one of five academic categories, each with its own band boundaries &mdash; AC-2 paid a full 10 above 63&nbsp;%, where the new table pays 3. Those tables were re-verified against the April 2026 archived IIMA admissions page.</p>
 
     <div class="sub-h">CAT curves</div>
-    <p>2022, 2023 and 2024 are inverted from the overall-score and overall-percentile columns of slot-wise score calculators, filtered for outliers on a rolling-median residual, then made monotone by pooled-adjacent-violators regression. Three corrupt rows in the CAT-2022 sheet were inflating that year&rsquo;s 99th percentile by about 11 marks before the filter was added; the rejected-row count for each year is printed under the chart. The curves reproduce published benchmarks closely &mdash; 2024: 99th at 94.75 marks against the 95&ndash;97 published by IMS and Cracku; 2023: 99th at 76.0 against 76&ndash;78. No public dataset of actual CAT-2025 scorecards exists, so every CAT&nbsp;2025 option here is an estimate. Cracku publishes a full table from the 55th to the 99.99th percentile, reproduced exactly and smoothed between anchors with shape-preserving (PCHIP) interpolation, which by construction cannot overshoot a published point. IMS publishes from the 80th to the 99.9th. Below each provider&rsquo;s lowest anchor the curve borrows the 2023/24 proxy&rsquo;s shape, so the bottom tail of both is illustrative rather than sourced. The default is the average of the two, on the view that where two independent estimates disagree the midpoint is a better guess than either, and the gap between them is the honest measure of how little is actually known.</p>
+    <p>2022, 2023 and 2024 are inverted from the overall-score and overall-percentile columns of slot-wise score calculators, filtered for outliers on a rolling-median residual, then made monotone by pooled-adjacent-violators regression. Three corrupt rows in the CAT-2022 sheet were inflating that year&rsquo;s 99th percentile by about 11 marks before the filter was added; the rejected-row count for each year is printed under the curve selector in chapter&nbsp;2&rsquo;s Advanced assumptions. The curves reproduce published benchmarks closely &mdash; 2024: 99th at 94.75 marks against the 95&ndash;97 published by IMS and Cracku; 2023: 99th at 76.0 against 76&ndash;78. No public dataset of actual CAT-2025 scorecards exists, so every CAT&nbsp;2025 option here is an estimate. Cracku publishes a full table from the 55th to the 99.99th percentile, reproduced exactly and smoothed between anchors with shape-preserving (PCHIP) interpolation, which by construction cannot overshoot a published point. IMS publishes from the 80th to the 99.9th. Below each provider&rsquo;s lowest anchor the curve borrows the 2023/24 proxy&rsquo;s shape, so the bottom tail of both is illustrative rather than sourced. The default is the average of the two, on the view that where two independent estimates disagree the midpoint is a better guess than either, and the gap between them is the honest measure of how little is actually known.</p>
 
     <div class="sub-h">Comparability</div>
     <p>The two regimes are compared as <em>mechanisms</em> &mdash; the same hypothetical pair of candidates run through two formulas. They are not a counterfactual about outcomes. CAT-2025 and CAT-2026 are different papers sat by different pools, and the 2027&ndash;29 applicant pool is itself being reshaped by the rewrite. Read &ldquo;the rewrite cost this profile two points&rdquo; as a statement about the tables, not a prediction about shortlists.</p>
@@ -644,13 +654,13 @@ footer p{max-width:74ch;margin:0 0 11px}
 
     <div class="sub-h">Author&rsquo;s note</div>
     <p>I built this because a policy changed in the middle of an application cycle and nobody published the exchange rate. IIMA told applicants the weights &mdash; 35 and 65 &mdash; and left them to work out what that meant for a marksheet they could no longer change. Three findings survived every profile I ran through it, and none of them depend on whose profile it is.</p>
-    <p><b>One.</b> The percentile ceiling inverts the balance of power. Above the qualifying floor there is a fixed, small amount of CAT left to win, and the Application Rating spread is larger than it. Under the old policy the reverse was true, because raw marks kept going up. Chapter&nbsp;5 puts a number on the swing for each category.</p>
-    <p><b>Two.</b> Collapsing five academic tables into one is a loss or a wash for nearly every background. Commerce and management degrees lose the band that paid 10 above 80. Engineering loses the 75&ndash;85 band that paid 8. CA, CS and CMA candidates lose most of all, from 10 above 63&nbsp;% down to 3. The only profile that gains is a low-scoring engineer in the 60&ndash;65 range. This was never announced as a change in generosity, and arithmetically that is what it is.</p>
-    <p><b>Three.</b> The unpublished top-50 AR divisor is an 8&nbsp;% band on every new-policy figure here, and unlike the discipline divisor it does not cancel &mdash; the shortlist line is common across disciplines even though the normalisation is not. Anyone quoting a single exact number for what an AR point is worth in 2027&ndash;29, this page included, is quoting the midpoint of a range IIMA has not disclosed.</p>
-    <p>What I would take from it as an applicant: spend effort on the boundary that is still live, and stop grieving the one that closed years ago. Chapter&nbsp;3 tells you which is which for your own profile, and the honest answer for most people is that the largest single number on the page is one they cannot move.</p>
+    <p><b>One.</b> The percentile ceiling inverts the balance of power. Above the qualifying floor there is a fixed, small amount of CAT left to win, and a plausible AR spread among qualifiers is larger than it. Under the old policy the reverse was true, because raw marks kept going up. Chapter&nbsp;5 puts a number on it for your category.</p>
+    <p><b>Two.</b> Collapsing five academic tables into one is a loss or a wash for nearly every background. CA, CS and CMA candidates lose up to seven points; medicine and arts degrees up to five; commerce and management two at 65&ndash;70&nbsp;%, three at 70&ndash;80&nbsp;% and two at 80&ndash;90&nbsp;%; engineering three at 75&ndash;80&nbsp;%. The only gain anywhere is a single point for an engineering, science or other degree between 55 and 65&nbsp;%. This was never announced as a change in generosity, and arithmetically that is what it is.</p>
+    <p><b>Three.</b> The unpublished top-50 AR average sets the exchange rate itself, so it moves every new-rules figure here by up to 12&nbsp;%, including same-discipline comparisons. Anyone quoting a single exact number for what an AR point is worth in 2027&ndash;29, this page included, is quoting the midpoint of a range IIMA has not disclosed.</p>
+    <p>What I would take from it as an applicant: spend effort on the boundary that can still move, and stop grieving the one that closed years ago. Chapter&nbsp;3 tells you which is which for your own profile, and the honest answer for most people is that the largest single number on the page is one they cannot move.</p>
 
     <div class="sub-h">Privacy</div>
-    <p>Nothing you type leaves your browser. There is no analytics, no cookie, no network request after the fonts load, and no server to send anything to. The permalink button encodes the two profiles into the URL fragment so you can bookmark or share a scenario; a fragment is never transmitted to any server.</p>
+    <p>Nothing you type leaves your browser. There is no analytics, no cookie, no network request after the fonts load, and no server to send anything to. The Copy permalink button in the top bar (chapters&nbsp;2&ndash;5) encodes the two profiles into the URL fragment so you can bookmark or share a scenario; a fragment is never transmitted to any server.</p>
   </div>
 
   <footer>
@@ -773,14 +783,21 @@ function pctAt(marks){
 /* ---------- exchange rates (verbatim) ---------- */
 function pctPerAR(){ return 0.35/S.div/0.0065; }
 function marksPerAR(){ return (0.35/OLD_DIV)*(TOTAL/0.65); }
+/* New-rules head start, in percentile points. Linear in percentile, so it does
+   not depend on where you sit. Same-discipline comparison: the discipline
+   normalisation cancels (IIMA publishes no divisors, so none is modelled). */
 function newGapAt(rival, x){
-  var r = S.disc, T = S.div;
-  var need = (r*(0.35*arNew(rival)/T + 0.65*x/100) - 0.35*arNew(S.me)/T) * 100/0.65;
-  return need - x;
+  return 0.35*(arNew(rival) - arNew(S.me))/S.div * 100/0.65;
 }
 function oldGapMarks(rival){ return (arOld(rival)-arOld(S.me))*marksPerAR(); }
 function marksForCS(cs, ar){ return (cs - ar*0.35/OLD_DIV) * TOTAL/0.65; }
-function oldGapPctAt(rival, x){ return pctAt(marksAt(x) + oldGapMarks(rival)) - x; }
+/* Old-rules head start at YOUR percentile x: the percentile points the rival's
+   mark lead is worth, i.e. how far below x they could score and still tie you. */
+function oldGapPctAt(rival, x){ return x - pctAt(marksAt(x) - oldGapMarks(rival)); }
+/* -1: rival's tying marks fall below the curve (true head start is larger);
+   +1: above it (true figure is more negative). Printed as bounds, not values. */
+function oldGapOff(rival, x){ return offCurve(marksAt(x) - oldGapMarks(rival)); }
+function oldGapTxt(rival, x){ var o = oldGapOff(rival,x); return (o<0?'≥':o>0?'≤':'') + sgn(oldGapPctAt(rival,x),2); }
 
 /* ---------- formatting ---------- */
 function f(n,d){ if(!isFinite(n)) return '—'; return n.toFixed(d==null?2:d); }
@@ -791,15 +808,14 @@ function pl(n,one,many){ return n===1?one:many; }
 
 /* ---------- presets, relative to your own profile ---------- */
 var PRESETS = [
-  {n:'Mirror me',          p:{}},
-  {n:'+ gender diversity', p:{g:'f'}},
-  {n:'+ 10th above 90',    p:{p10:92}},
-  {n:'+ 12th above 90',    p:{p12:92}},
-  {n:'+ bachelor above 90',p:{ug:92}},
-  {n:'+ 2 yrs work-ex',    p:{wx:24}},
-  {n:'+ 3 yrs work-ex',    p:{wx:40}},
-  {n:'All academics 90+',  p:{p10:92,p12:92,ug:92}},
-  {n:'Maximum AR 38',      p:{p10:95,p12:95,ug:95,wx:40,g:'f'}}
+  {n:'Non-male',                 p:{g:'f'}},
+  {n:'Class 10 above 90',        p:{p10:92}},
+  {n:'Class 12 above 90',        p:{p12:92}},
+  {n:'Degree above 90',          p:{ug:92}},
+  {n:'2 years of work',          p:{wx:24}},
+  {n:'3+ years of work',         p:{wx:40}},
+  {n:'All three marks above 90', p:{p10:92,p12:92,ug:92}},
+  {n:'Maximum AR (38)',          p:{p10:95,p12:95,ug:95,wx:40,g:'f'}}
 ];
 
 /* ---------- whole-profile rivals, absolute ---------- */
@@ -822,7 +838,11 @@ var ARCH = [
 ];
 function mk(patch){
   var base = {p10:S.me.p10,p12:S.me.p12,stream:S.me.stream,ug:S.me.ug,ac:S.me.ac,wx:S.me.wx,g:S.me.g};
-  var k; for(k in patch) if(Object.prototype.hasOwnProperty.call(patch,k)) base[k]=patch[k];
+  var k;
+  for(k in patch) if(Object.prototype.hasOwnProperty.call(patch,k)){
+    /* numeric changes are "at least this", so a rival is never made worse than you */
+    base[k] = (typeof patch[k]==='number') ? Math.max(base[k], patch[k]) : patch[k];
+  }
   return base;
 }
 function archProfile(a){ return a.rel ? mk(a.rel) : cp(a.abs); }
@@ -830,17 +850,20 @@ function archProfile(a){ return a.rel ? mk(a.rel) : cp(a.abs); }
 /* ============================================================
    RENDER
    ============================================================ */
+function isSample(){
+  return ['p10','p12','stream','ug','ac','wx','g','cat'].every(function(k){ return S.me[k]===DEF_ME[k]; });
+}
 function renderRates(){
   var an = arNew(S.me), ao = arOld(S.me), d = ao - an;
   $('rateNew').textContent = pctPerAR().toFixed(3);
   $('rateOld').textContent = marksPerAR().toFixed(3);
   $('rateAR').innerHTML = an.toFixed(1) + ' <small>/ ' + AR_MAX + '</small>';
-  $('rateARu').textContent = 'Application Rating under the new common table';
+  $('rateARu').innerHTML = isSample() ? 'Sample profile, not yours &mdash; enter your marks in chapter&nbsp;2' : 'Your AR under the new scoring table';
   $('rateARn').innerHTML = d > 0.001
-    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables. The rewrite cost this profile <b>' + f(d,1) + ' ' + pl(d,'point','points') + '</b> before any rival is considered — worth <b>' + f(d*pctPerAR(),2) + ' CAT percentile points</b>.'
+    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables. The new scoring table cost this profile <b>' + f(d,1) + ' ' + pl(d,'point','points') + '</b> before any rival is considered, worth <b>' + f(d*pctPerAR(),2) + ' CAT percentile points</b>.'
     : d < -0.001
-    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables, so the rewrite <em>gained</em> this profile <b>' + f(-d,1) + ' ' + pl(-d,'point','points') + '</b>. That is the uncommon case; it happens mainly to lower-scoring engineering aggregates.'
-    : 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables — identical. This profile sits in the narrow set the table rewrite left untouched.';
+    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables, so the new scoring table <em>gained</em> this profile <b>' + f(-d,1) + ' ' + pl(-d,'point','points') + '</b>. That is rare: it happens only to engineering, science or other degrees between 55 and 65&nbsp;%.'
+    : 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables — identical. This profile sits in the narrow set the new scoring table left untouched.';
 }
 
 function curveLabel(){
@@ -849,47 +872,32 @@ function curveLabel(){
 }
 
 function renderVerdict(){
-  var R = S.rival, x = S.op;
+  var R = S.rival, x = S.op, fl = floorPct();
   var gN = newGapAt(R,x), gM = oldGapMarks(R), gP = oldGapPctAt(R,x);
-  var same = (Math.abs(gP)<0.005 && Math.abs(gN)<0.005);
-  var amp  = same ? null : ((Math.abs(gP)<0.005) ? Infinity : gN/gP);
-  var be   = x + gN;
+  var tie = x - gN, tieOld = x - gP;
 
   $('vNew').textContent = sgn(gN,2);
-  $('vNewN').innerHTML = 'Rival AR <b>' + arNew(R).toFixed(1) + '</b> against your <b>' + arNew(S.me).toFixed(1) + '</b>' +
-    (S.disc!==1 ? ', including a discipline ratio of ' + S.disc.toFixed(2) : '. Same discipline, so normalisation cancels.');
+  $('vNewN').innerHTML = (gN>0.005 ? 'Percentile points the rival starts ahead of you, from their marksheet alone.'
+      : gN<-0.005 ? 'Negative: you start this far ahead of the rival.' : 'No head start either way.') +
+    ' AR <b>' + arNew(R).toFixed(1) + '</b> against your <b>' + arNew(S.me).toFixed(1) + '</b>' +
+    '.';
 
-  $('vOldM').textContent = sgn(gM,2);
-  $('vOldMN').innerHTML = 'Rival AR <b>' + arOld(R).toFixed(1) + '</b> against your <b>' + arOld(S.me).toFixed(1) +
-    '</b> under the old stream and academic-category tables.';
+  $('vOldP').textContent = oldGapTxt(R,x);
+  $('vOldPN').innerHTML = 'Last year&rsquo;s tables: AR <b>' + arOld(R).toFixed(1) + '</b> against your <b>' + arOld(S.me).toFixed(1) +
+    '</b>, a <b>' + sgn(gM,1) + '-mark</b> lead in raw score, worth this much at ' + x.toFixed(2) + ' on the CAT ' + curveLabel() + ' curve.';
 
-  $('vOldP').textContent = sgn(gP,2);
-  $('vOldPN').innerHTML = 'At ' + x.toFixed(2) + ' on the CAT ' + curveLabel() + ' curve, ' +
-    marksAt(x).toFixed(1) + ' marks becomes ' + (marksAt(x)+gM).toFixed(1) + '.';
-
-  $('vAmp').textContent = same ? '—' : (isFinite(amp) ? amp.toFixed(2)+'×' : '∞');
-  $('vAmpN').innerHTML = same
-    ? 'The two profiles are identical, so there is no advantage to measure.'
-    : !isFinite(amp)
-    ? 'Under the old tables this rival had no advantage over you at all. The new rules create one out of nothing.'
-    : (Math.abs(gP) < 0.10
-       ? 'It says ' + amp.toFixed(1) + '×, but ignore that — the old gap here is only ' + gP.toFixed(2) +
-         ' percentile, so the ratio is dividing by almost nothing. Read the two gap figures instead.'
-       : amp>1.05 ? 'The change made this advantage ' + amp.toFixed(1) + '× stronger at the percentile you are sitting at.'
-       : amp<0.95 ? 'The change actually weakened this advantage for you here.'
-       : 'Barely changed at this percentile.');
-
-  $('vBE').textContent = (be>100 ? '>100' : be.toFixed(2));
-  $('vBEN').innerHTML = be>100
-    ? 'Out of reach. There is no CAT score that closes this gap — you would have to beat them in the written test and the interview instead.'
-    : 'You need <b>' + be.toFixed(2) + '</b> to finish level with them at ' + x.toFixed(2) + '. Under the old rules you needed ' +
-      Math.min(100, x + gP).toFixed(2) + '.';
+  $('vBE').textContent = tie>100 ? '>100' : tie.toFixed(2);
+  $('vBEN').innerHTML = tie>100
+    ? 'No CAT score lets the rival tie you: your AR lead is bigger than the room left at the top.'
+    : 'If you score ' + x.toFixed(2) + ', this is the rival&rsquo;s tying score. Under last year&rsquo;s rules it was ' +
+      (oldGapOff(R,x)<0 ? tieOld.toFixed(2) + ' or lower' : oldGapOff(R,x)>0 ? tieOld.toFixed(2) + ' or higher' : Math.min(100,tieOld).toFixed(2)) + '.' +
+      (tie < fl - 0.005 ? ' <b>That is below the ' + fl + ' floor</b>, so it cannot actually happen: the rival must score at least ' + fl + ', and at ' + fl + ' they would already be ahead of you.' : '');
 
   var dn = arNew(R)-arNew(S.me), dod = arOld(R)-arOld(S.me);
   $('verdictLead').innerHTML = (Math.abs(dn)<0.005 && Math.abs(dod)<0.005)
-    ? 'The rival is identical to you right now, so there is nothing to measure. Change something on the right-hand panel, or pick a preset.'
-    : 'The rival is <b class="isnew">' + sgn(dn,1) + '</b> marksheet points ahead of you under the new tables, and <b class="isold">' +
-      sgn(dod,1) + '</b> under the old ones. Everything below follows from that one gap.';
+    ? 'The rival is identical to you right now, so there is nothing to measure. Change something in the rival panel, or load a rival from the menu above it.'
+    : 'The rival is <b class="isnew">' + sgn(dn,1) + '</b> AR points ahead of you under the new table, and <b class="isold">' +
+      sgn(dod,1) + '</b> under last year&rsquo;s tables. Everything below follows from that gap.';
 }
 
 /* ── The equivalence table ─────────────────────────────────────────────
@@ -917,77 +925,54 @@ function leverRows(){
 }
 
 function renderEquiv(){
-  var me = S.me, rate = pctPerAR(), A = S.op, anchorMe = (S.anchor !== 'rival');
-  var html = '';
+  var me = S.me, rate = pctPerAR(), A = S.op, anchorMe = (S.anchor !== 'rival'), fl = floorPct();
+  var html = '', anyBelow = false, anyClamp = false;
 
-  document.getElementById('hNewEq').textContent = anchorMe ? 'They draw level at' : 'You draw level at';
-  document.getElementById('hOldEq').textContent = anchorMe ? 'They draw level at' : 'You draw level at';
-  document.getElementById('anchorLabel').textContent = anchorMe ? 'My CAT percentile' : 'Their CAT percentile';
+  $('hNewEq').textContent = anchorMe ? 'They need to tie' : 'You need to tie';
 
   leverRows().forEach(function(r){
     var R = mk(r[1]);
-    var dN = arNew(R) - arNew(me);          /* rival minus me, new tables */
-    var dO = arOld(R) - arOld(me);          /* rival minus me, old tables */
-
-    /* NEW policy — linear in percentile, so the head start is a constant */
-    var eqN   = anchorMe ? A - dN*rate : A + dN*rate;
+    var dN = arNew(R) - arNew(me), dO = arOld(R) - arOld(me);
+    /* new rules: linear in percentile, so the head start is a constant */
+    var eqN = anchorMe ? A - dN*rate : A + dN*rate;
     var headN = dN * rate;
-
-    /* OLD policy — goes through the score curve, so it depends on altitude */
+    /* old rules: through the score curve, so it depends on where you sit */
     var mA = marksAt(A), mpar = marksPerAR();
     var eqOm = anchorMe ? mA - dO*mpar : mA + dO*mpar;
-    var eqO  = pctAt(eqOm);
+    var eqO = pctAt(eqOm);
     var headO = anchorMe ? (A - eqO) : (eqO - A);
-
-    var off = (eqN > 100 || eqN < 50);
     var offO = offCurve(eqOm);
-    var dim = Math.abs(dN) < 0.005;
+    var dim = Math.abs(dN) < 0.005, dimO = Math.abs(dO) < 0.005;
+    var below = !dim && eqN <= 100 && eqN < fl;
+    if(below) anyBelow = true;
+    if(!dimO && offO) anyClamp = true;
+    var tieTxt = dim ? '—' : eqN > 100 ? 'not possible'
+      : eqN.toFixed(2) + (below ? '<span class="sub">below the ' + fl + ' floor</span>' : '');
 
     html += '<tr>' +
-      '<td>' + r[0] + (r[2] ? '<span class="sub">Already true of you — no gap</span>' : '') + '</td>' +
+      '<td>' + r[0] + (dim && dimO ? '<span class="sub">Already true of you, so no gap</span>' : '') + '</td>' +
       '<td class="num ' + (dim?'dim':'') + '">' + sgn(dN,1) + ' <span class="dim">/ ' + sgn(dO,1) + '</span></td>' +
-      '<td class="num ' + (dim?'dim':(off?'dim':'vnew')) + '">' +
-        (dim ? '—' : (eqN>100 ? 'not possible' : eqN<50 ? 'below 50' : eqN.toFixed(2))) + '</td>' +
+      '<td class="num ' + (dim||below||eqN>100 ? 'dim' : 'vnew') + '">' + tieTxt + '</td>' +
       '<td class="num ' + (dim?'dim':'vnew') + '">' + (dim ? '—' : sgn(headN,2)) + '</td>' +
-      '<td class="num ' + (Math.abs(dO)<0.005?'dim':(offO?'dim':'vold')) + '">' +
-        (Math.abs(dO)<0.005 ? '—' : (offO>0 ? '≥'+eqO.toFixed(2) : offO<0 ? '≤'+eqO.toFixed(2) : eqO.toFixed(2))) + '</td>' +
-      '<td class="num ' + (Math.abs(dO)<0.005?'dim':'vold') + '">' + (Math.abs(dO)<0.005 ? '—' : sgn(headO,2)) + '</td>' +
+      '<td class="num ' + (dimO||offO ? 'dim' : 'vold') + '">' + (dimO ? '—' : (offO ? '≥' : '') + sgn(headO,2)) + '</td>' +
       '</tr>';
   });
   document.querySelector('#equivTable tbody').innerHTML = html;
 
-  document.getElementById('equivLead').innerHTML = anchorMe
-    ? 'You score <b>' + A.toFixed(2) + '</b>. Each row shows the percentile that rival needs to finish exactly level with you, and how much of a head start their profile alone is worth.'
-    : 'They score <b>' + A.toFixed(2) + '</b>. Each row shows the percentile <em>you</em> need to finish exactly level with them, and how much of a head start their profile alone is worth.';
+  $('equivLead').innerHTML = anchorMe
+    ? 'You score <b>' + A.toFixed(2) + '</b>. Each row is a rival who is you with one thing better. It shows the percentile they need to tie you, and how many percentile points their marksheet alone is worth.'
+    : 'The rival scores <b>' + A.toFixed(2) + '</b>. Each row is a rival who is you with one thing better. It shows the percentile <em>you</em> need to tie them, and how many percentile points their marksheet alone is worth.';
 
-  /* the comparison that makes the whole page's point */
-  var Rg = mk({g:'f'});
-  var dNg = arNew(Rg) - arNew(me), dOg = arOld(Rg) - arOld(me);
-  var lo = Math.max(floorPct()+0.5, 90), hi = 99.5;
-  function pctLabel(v){ return (Math.abs(v-Math.round(v))<0.01) ? String(Math.round(v)) + 'th' : v.toFixed(1) + 'th'; }
-  function headOldAt(x){ return x - pctAt(marksAt(x) - dOg*marksPerAR()); }
-  var note;
-  if(Math.abs(dNg) < 0.005){
-    note = 'Gender is the one lever that costs nothing to hold and cannot be earned. You already hold it, so that row is blank — change something else on the rival panel to see the mechanism.';
-  } else {
-    note = 'Look at the two <b>head start</b> columns. Under the new policy the number is the same wherever you sit: <b class="isnew">' +
-      f(dNg*rate,2) + '</b> percentile, at the 85th and at the 99.9th alike, because the formula pays 65&nbsp;% for a percentile and a percentile is a percentile. ' +
-      'Under the old policy the same profile gap was worth <b class="isold">' + f(headOldAt(lo),2) + '</b> at the ' + pctLabel(lo) +
-      ' but only <b class="isold">' + f(headOldAt(hi),2) + '</b> at the ' + pctLabel(hi) + ' — it shrank as you climbed, because it was denominated in marks and marks get expensive near the top. ' +
-      'That collapse is what the rewrite removed. The head start no longer fades the harder you work.';
-  }
-  var fl = floorPct();
-  var anyBelow = leverRows().some(function(r){
-    var R = mk(r[1]), dN = arNew(R) - arNew(me);
-    if(Math.abs(dN) < 0.005) return false;
-    return (anchorMe ? A - dN*rate : A + dN*rate) < fl;
-  });
+  var note = '<b>Head start</b> is what the rival&rsquo;s marksheet alone is worth, in CAT percentile. The new-rules figure is the same at any percentile. ' +
+    'The old-rules figure changes with the percentile in the top bar, because last year&rsquo;s formula counted marks, and chapter&nbsp;2 shows how it fades as you climb.';
   if(anyBelow){
-    note += ' <br><br><b>One caveat on the low numbers.</b> A draw-level percentile below <b>' + fl +
-      '</b> is arithmetic only — that is your category\u2019s published CAT floor, and anyone under it is removed before the merit list is even drawn. ' +
-      'Those rows say the marksheet gap is large enough to cancel a huge CAT gap on paper; they do not say the person would survive to be compared.';
+    note += ' A tying score marked <b>below the floor</b> works on paper only: anyone under the ' + fl +
+      ' percentile floor is cut before ranking, so in practice that person needs at least ' + fl + '.';
   }
-  document.getElementById('equivNote').innerHTML = note;
+  if(anyClamp){
+    note += ' A <b>≥</b> means the old-rules conversion ran off the end of the score curve, so the true head start is at least that large.';
+  }
+  $('equivNote').innerHTML = note;
 }
 
 function renderArch(){
@@ -996,8 +981,9 @@ function renderArch(){
     var R = archProfile(a);
     var gN = newGapAt(R,x), gM = oldGapMarks(R), gP = oldGapPctAt(R,x);
     var verdict;
-    if(gN<=0.01)          verdict = '<span class="tag flat">you lead</span>';
-    else if(x+gN>100)     verdict = '<span class="tag new">out of reach</span>';
+    if(Math.abs(gN)<=0.01 && Math.abs(gP)<=0.01) verdict = '<span class="tag flat">level</span>';
+    else if(gN < -0.01)   verdict = '<span class="tag flat">you lead</span>';
+    else if(x+gN>100)     verdict = (x+gP>100 ? '<span class="tag new">CAT can&rsquo;t close it, either year</span>' : '<span class="tag new">CAT can&rsquo;t close it now</span>');
     else if(gN>gP+0.5)    verdict = '<span class="tag new">worse for you now</span>';
     else if(gP>gN+0.5)    verdict = '<span class="tag old">was worse before</span>';
     else                  verdict = '<span class="tag flat">roughly unchanged</span>';
@@ -1007,7 +993,7 @@ function renderArch(){
       '<td class="num ' + (gN>0.01?'vnew':'dim') + '">' + sgn(gN,2) + '</td>' +
       '<td class="num vold">' + arOld(R).toFixed(1) + '</td>' +
       '<td class="num ' + (Math.abs(gM)<0.01?'dim':'vold') + '">' + sgn(gM,2) + '</td>' +
-      '<td class="num ' + (Math.abs(gP)<0.01?'dim':'vold') + '">' + sgn(gP,2) + '</td>' +
+      '<td class="num ' + (Math.abs(gP)<0.01||oldGapOff(R,x)?'dim':'vold') + '">' + oldGapTxt(R,x) + '</td>' +
       '<td>' + verdict + '</td></tr>';
   });
   document.querySelector('#archTable tbody').innerHTML = html;
@@ -1021,6 +1007,7 @@ function nextBound(v){
 
 function renderBands(){
   var me = S.me, rate = pctPerAR(), html='';
+  $('bandLo').textContent = rate.toFixed(1); $('bandHi').textContent = (3*rate).toFixed(1);
   var acad = [
     {k:'Class 10',        v:me.p10, live:false},
     {k:'Class 12',        v:me.p12, live:false},
@@ -1028,7 +1015,7 @@ function renderBands(){
   ];
   acad.forEach(function(r){
     var pts = bandNew(r.v), nb = nextBound(r.v);
-    var tag = r.live ? '<span class="tag live">still live</span>' : '<span class="tag locked">locked</span>';
+    var tag = r.live ? '<span class="tag live">can change</span>' : '<span class="tag locked">fixed</span>';
     var bandTxt = nb===null ? 'above 90 — top band'
                 : (nb===55 ? 'at or below 55' : 'above ' + NEW_BOUNDS[NEW_BOUNDS.indexOf(nb)-1] + ', up to ' + nb);
     if(nb===null){
@@ -1050,12 +1037,12 @@ function renderBands(){
       '<td class="dim">' + bandTxt + '</td>' +
       '<td class="num">' + pts + '</td>' +
       '<td class="num">above ' + nb + ' % → ' + nextPts + ' pts</td>' +
-      '<td class="num' + (r.live?'':' dim') + '">' + (r.live ? '+' + need.toFixed(2) + ' pts' : 'unreachable — needed +' + need.toFixed(2)) + '</td>' +
+      '<td class="num' + (r.live?'':' dim') + '">' + (r.live ? '+' + need.toFixed(2) + ' % marks' : 'fixed, ' + need.toFixed(2) + ' % short') + '</td>' +
       '<td class="num ' + (r.live?'vnew':'dim') + '">' + (r.live ? sgn(worth,2) : f(worth,2) + ' forgone') + '</td></tr>';
   });
 
   /* work experience */
-  var wpts = wx(me.wx), wtag = me.wxLive ? '<span class="tag live">still live</span>' : '<span class="tag locked">locked</span>';
+  var wpts = wx(me.wx), wtag = me.wxLive ? '<span class="tag live">can change</span>' : '<span class="tag locked">fixed</span>';
   var wband, wnext, wneed, wworth;
   if(me.wx >= 36){
     wband = '36+ months — top band'; wnext = '— at the ceiling'; wneed = 'nothing left to gain'; wworth = 0;
@@ -1071,7 +1058,7 @@ function renderBands(){
     '<td class="dim">' + wband + '</td>' +
     '<td class="num">' + wpts.toFixed(2) + '</td>' +
     '<td class="num">' + wnext + '</td>' +
-    '<td class="num' + (me.wxLive?'':' dim') + '">' + wneed + '</td>' +
+    '<td class="num' + (me.wxLive?'':' dim') + '">' + wneed + (me.wxLive && me.wx < 36 ? '<span class="sub">only months done before the form closes count</span>' : '') + '</td>' +
     '<td class="num ' + (me.wxLive&&wworth>0?'vnew':'dim') + '">' + (wworth>0 ? (me.wxLive?sgn(wworth,2):f(wworth,2)+' forgone') : '—') + '</td></tr>';
 
   /* gender */
@@ -1086,7 +1073,7 @@ function renderBands(){
 
   /* nearest boundary, in either direction, across the three academics */
   var nearest=null;
-  acad.forEach(function(r){
+  acad.filter(function(r){ return r.live || nextBound(r.v)!==null; }).forEach(function(r){
     var nb = nextBound(r.v);
     var dist = nb===null ? (r.v - 90) : ((nb + 0.01) - r.v);
     var above = nb===null;
@@ -1096,11 +1083,11 @@ function renderBands(){
     $('bandNote').innerHTML = nearest.above
       ? '<b>' + nearest.k + '</b> is your tightest number: ' + nearest.v.toFixed(2) + ' % sits just <b>' +
         nearest.dist.toFixed(2) + '</b> above the 90 boundary that separates 8 points from 10. Those two points are worth <b>' +
-        f(2*rate,2) + ' CAT percentile points</b>, and the margin holding them is smaller than a single paper’s worth of moderation.'
+        f(2*rate,2) + ' CAT percentile points</b>, a thin margin to be holding that much on.'
       : '<b>' + nearest.k + '</b> is your nearest boundary: <b>' + nearest.dist.toFixed(2) +
         '</b> percentage points short of ' + nearest.nb + ' %. ' +
-        (nearest.live ? 'It is still live, and crossing it is worth ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' CAT percentile points.'
-                      : 'It is locked, so that distance is a permanent concession of ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' percentile points to anyone on the other side of it.');
+        (nearest.live ? 'It can still change, and crossing it is worth ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' CAT percentile points.'
+                      : 'It is fixed, so that distance is a permanent concession of ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' percentile points to anyone on the other side of it.');
   }
 }
 
@@ -1115,55 +1102,75 @@ function offCurve(marks){
 }
 function renderCuts(){
   var arO = arOld(S.me), arN = arNew(S.me), html='', anyOff=false;
+  var anyBound=false, anyBinds=false;
   CAT_KEYS.forEach(function(cat){
     var c = CATS[cat];
     var m28 = marksForCS(c.cs, arO), m26 = marksForCS(c.cs, arN);
     var o28 = offCurve(m28), o26 = offCurve(m26);
     var p28 = pctAt(m28), p26 = pctAt(m26);
-    if(o28 || o26) anyOff = true;
+    var b28 = p28 < c.pt, b26 = p26 < c.pt;          /* floor is the real requirement */
+    /* a low clamp below the floor resolves exactly to the floor; anything else off-curve does not */
+    var unres = (o28 && !b28) || (o26 && !b26);
+    if(unres) anyOff = true;
+    if(o28 || o26) anyBound = true;
+    if(b28 || b26) anyBinds = true;
     var mine = (cat === S.me.cat);
-    function pcell(p, off, cls){
-      if(!off) return '<td class="num ' + cls + '">' + p.toFixed(2) + '</td>';
-      return '<td class="num dim" title="Beyond the observed CAT ' + curveLabel() +
-             ' curve — the conversion clamps at the curve end, so this is a bound, not a value.">' +
-             (off<0 ? '≤' : '≥') + p.toFixed(2) + '</td>';
+    function pcell(p, off, binds, cls){
+      var v = (off<0 ? '≤' : off>0 ? '≥' : '') + p.toFixed(2);
+      if(binds) return '<td class="num dim">' + v + '<span class="sub">floor ' + c.pt + ' binds</span></td>';
+      if(!off)  return '<td class="num ' + cls + '">' + v + '</td>';
+      return '<td class="num dim" title="Beyond the observed CAT ' + curveLabel() + ' curve: this is a bound, not a value.">' + v + '</td>';
     }
-    var cost = (o28 || o26)
+    var eff = Math.max(p26, c.pt) - Math.max(p28, c.pt);
+    var cost = unres
       ? '<td class="num dim" title="Not computed: at least one side of this row is off the observed curve.">—</td>'
-      : '<td class="num ' + (Math.abs(p26-p28)<0.005?'dim':'') + '">' + sgn(p26-p28,2) + '</td>';
+      : '<td class="num ' + (Math.abs(eff)<0.005?'dim':'') + '">' + sgn(eff,2) + '</td>';
     html += '<tr' + (mine?' class="mine"':'') + '><td>' + esc(cat) + (mine?' <span class="tag flat">yours</span>':'') + '</td>' +
       '<td class="num dim">' + c.pt + '</td>' +
       '<td class="num dim">' + c.cs.toFixed(6) + '</td>' +
-      '<td class="num vold">' + m28.toFixed(1) + '</td>' + pcell(p28, o28, 'vold') +
-      '<td class="num vnew">' + m26.toFixed(1) + '</td>' + pcell(p26, o26, 'vnew') +
+      '<td class="num vold">' + m28.toFixed(1) + '</td>' + pcell(p28, o28, b28, 'vold') +
+      '<td class="num vnew">' + m26.toFixed(1) + '</td>' + pcell(p26, o26, b26, 'vnew') +
       cost + '</tr>';
   });
   document.querySelector('#cutTable tbody').innerHTML = html;
 
-  var c  = CATS[S.me.cat];
+  var c  = CATS[S.me.cat], pt = c.pt;
   var mO = marksForCS(c.cs, arO), mN = marksForCS(c.cs, arN);
   var oO = offCurve(mO), oN = offCurve(mN);
-  var d    = pctAt(mN) - pctAt(mO);
+  var pO = pctAt(mO), pN = pctAt(mN), bO = pO < pt, bN = pN < pt;
+  var d    = Math.max(pN,pt) - Math.max(pO,pt);
   var dAR  = arO - arN;
-  var lead;
-  if(oO || oN){
-    lead = 'Your own row, <b>' + esc(S.me.cat) + '</b>, falls off the end of the observed CAT ' + curveLabel() +
-      ' curve: at this Application Rating the line sits at ' +
-      ((oO>0||oN>0) ? Math.max(mO,mN).toFixed(1) + ' marks, above the highest score in the data'
-                    : Math.min(mO,mN).toFixed(1) + ' marks, below the lowest score in the data') +
-      '. That is itself the finding. A rating this far from the line is not rescued by CAT alone, and any percentile printed against it would be a clamp rather than a conversion.';
-  } else if(Math.abs(dAR) < 0.005){
-    lead = 'The rewrite left your rating unchanged, so at your own category line the two regimes ask the same thing of you. Not every profile is so lucky — change the academic category in chapter 2 and watch this row move.';
-  } else {
-    lead = 'This is the honest version of the headline. At <b>' + esc(S.me.cat) + '</b>, the percentile where a shortlist was actually decided, the ' +
-      f(Math.abs(dAR),1) + ' ' + pl(Math.abs(dAR),'point','points') + ' the rewrite ' + (dAR>0?'took away':'handed over') + ' ' +
-      pl(Math.abs(dAR),'is','are') + ' worth <b>' + Math.abs(d).toFixed(2) + ' percentile points</b>, not the ' +
-      f(Math.abs(dAR)*pctPerAR(),2) + ' that the flat new-policy rate implies. The rate is flat; the curve underneath it is not.';
+  function need(m, p, b){
+    return b ? 'only the ' + pt + ' percentile floor (' + Math.max(0,m).toFixed(1) + ' marks would already have cleared the score)'
+             : m.toFixed(1) + ' marks (≈' + p.toFixed(2) + ' percentile)';
   }
+  var lead;
+  if((oO && !bO) || (oN && !bN)){
+    lead = 'Your own row, <b>' + esc(S.me.cat) + '</b>, falls off the top of the observed CAT ' + curveLabel() +
+      ' curve: at this AR the line sits at ' + Math.max(mO,mN).toFixed(1) + ' marks, above the highest score in the data. ' +
+      'That is itself the finding. An AR this far below the line is not rescued by CAT alone, and any percentile printed against it would be a clamp rather than a conversion.';
+  } else if(bO && bN){
+    lead = 'At last year&rsquo;s <b>' + esc(S.me.cat) + '</b> cut-off your AR is strong enough that the cut-off score never bites: under either table the real requirement is simply the <b>' + pt +
+      ' percentile floor</b>. For this category the new table costs you nothing.';
+  } else if(Math.abs(dAR) < 0.005){
+    lead = 'The new scoring table left your AR unchanged, so at last year&rsquo;s <b>' + esc(S.me.cat) + '</b> line both tables ask the same of you: <b>' + need(mO,pO,bO) + '</b>. Most profiles are not so lucky. Change the academic category in chapter&nbsp;2 and watch this move.';
+  } else {
+    lead = 'Take last year&rsquo;s <b>' + esc(S.me.cat) + '</b> cut-off. With your old-table AR of <b>' + arO.toFixed(1) +
+      '</b> you needed <b class="isold">' + need(mO,pO,bO) + '</b>. The new table rates the same marksheet <b>' +
+      arN.toFixed(1) + '</b>, so the same line would need <b class="isnew">' + need(mN,pN,bN) + '</b>: ' +
+      '<b>' + Math.abs(d).toFixed(2) + ' percentile ' + (d>=0 ? 'more' : 'less') + '</b>, from the table change alone.' +
+      (!bO && !bN && Math.abs(Math.abs(d) - Math.abs(dAR)*pctPerAR()) > 0.25
+        ? (Math.abs(d) < 0.25
+            ? ' That looks tiny only because the line sits so close to the top that percentiles bunch together. In raw score it is <b>' + Math.abs(mN-mO).toFixed(1) + ' marks</b> ' + (d>=0?'more':'less') + ', roughly ' + Math.max(1,Math.round(Math.abs(mN-mO)/3)) + ' ' + pl(Math.max(1,Math.round(Math.abs(mN-mO)/3)),'correct answer','correct answers') + ' at +3 each.'
+            : ' Not the ' + f(Math.abs(dAR)*pctPerAR(),2) + ' the flat new-rules rate would suggest: last year&rsquo;s formula counted marks, and how many marks a percentile point costs depends on where the line sits.')
+        : '');
+  }
+  $('cutLead').innerHTML = lead;
   $('cutNote').innerHTML =
-    'Minimum composite scores are the Stage-2 category figures published in the PGP 2026–28 shortlisting criteria, back-solved through that cycle’s own formula (CS = AR&nbsp;×&nbsp;0.35&nbsp;÷&nbsp;38 + score&nbsp;×&nbsp;0.65&nbsp;÷&nbsp;204) and converted on the CAT ' + curveLabel() + ' curve. ' + lead +
-    (anyOff ? ' A percentile shown as <b>≤</b> or <b>≥</b> is a bound: the marks needed fall outside the range the curve was built from, so the conversion clamps at the curve’s end and the cost column is left blank rather than filled with an artefact.' : '') +
-    ' The 2027–29 cut lines will differ — the formula changed and so will the pool. Note also <b>PwD (ST)</b> at 0.588713, higher than General: a single-candidate category, and a reminder that these are observed minima, not designed thresholds.';
+    '<b>How to read this.</b> Both sides use last year&rsquo;s formula (AR&nbsp;×&nbsp;0.35&nbsp;÷&nbsp;38 + marks&nbsp;×&nbsp;0.65&nbsp;÷&nbsp;204) and last year&rsquo;s published Stage-2 minimum score for each category. The only thing that changes is which rating table scores your marksheet. So this isolates what the new table alone would have cost; it does not predict where the 2027–29 line will fall, because the formula and the applicant pool have both changed. Marks are converted to percentile on the CAT ' + curveLabel() + ' curve.' +
+    (anyBinds ? ' Where a cell says <b>floor binds</b>, the cut-off score would have been reached below the category&rsquo;s percentile floor, so the floor is the real requirement and the last column uses it.' : '') +
+    (anyBound ? ' A percentile shown as <b>≤</b> or <b>≥</b> is a bound: the marks needed fall outside the range the curve was built from, so the conversion clamps at the curve&rsquo;s end; where that leaves the answer unknown, the last column is left blank rather than filled with an artefact.' : '') +
+    ' Note <b>PwD (ST)</b> at 0.588713, higher than General: an observed minimum from a very small category, not a designed threshold.';
 }
 
 function renderStructural(){
@@ -1171,27 +1178,22 @@ function renderStructural(){
   var myFloor = floorPct(), genFloor = CATS['General'].pt;
 
   /* --- 1. AR outweighs CAT above the floor --- */
-  var arSpread = 0.35*(38-18)/T;                         /* AR 18 to 38 among viable applicants */
+  var arSpread = 0.35*(38-18)/T, arSpreadOld = 0.35*(38-18)/OLD_DIV;                         /* AR 18 to 38 among viable applicants */
   var newMine  = 0.65*(100-myFloor)/100, newGen = 0.65*(100-genFloor)/100;
   var oldMine  = 0.65*(marksAt(99.99)-marksAt(myFloor))/TOTAL;
   var oldGen   = 0.65*(marksAt(99.99)-marksAt(genFloor))/TOTAL;
   $('domBody').innerHTML =
-    'Once you are over the qualifying line, there is only so much CAT left to win. Your category, <b>' + esc(me.cat) +
-    '</b>, has a published overall floor of <b>' + myFloor + '</b>, so the usable band runs from ' + myFloor +
-    ' to 100 and is worth <b class="isnew">' + newMine.toFixed(3) + '</b> of composite score. A realistic Application Rating spread, 18 to 38, is worth <b>' +
-    arSpread.toFixed(3) + '</b> — <b>' + (arSpread/newMine).toFixed(1) + '× more</b>.' +
-    (myFloor!==genFloor ? ' For General the floor is ' + genFloor + ', the band is worth only ' + newGen.toFixed(3) +
-      ', and AR outweighs CAT by ' + (arSpread/newGen).toFixed(1) + '× — the higher the floor, the more decisive the application form becomes.' : '') +
+    'Once you clear your category&rsquo;s qualifying line, there is only so much CAT left to win. For <b>' + esc(me.cat) + '</b> the floor is <b>' + myFloor +
+    '</b>, so everyone still in the race sits between ' + myFloor + ' and 100, and under the new formula that entire band is worth <b class="isnew">' + newMine.toFixed(3) + '</b> of composite score. ' +
+    'Suppose AR among those candidates runs from about <b>18 to 38</b>. IIMA publishes no distribution, so this is an assumption. That spread is worth <b>' + arSpread.toFixed(3) +
+    '</b>: <b>' + (arSpread/newMine).toFixed(1) + '×</b> the whole CAT band.' +
+    (myFloor!==genFloor ? ' For General, with a floor of ' + genFloor + ', the CAT band is worth only ' + newGen.toFixed(3) + ', so the same AR spread is ' + (arSpread/newGen).toFixed(1) + '× larger. The higher the floor, the more the application form decides.' : '') +
     '<ul class="tight">' +
-    '<li>Under the old policy that same band ran from <b class="isold">' + marksAt(myFloor).toFixed(0) + '</b> to <b class="isold">' +
-      marksAt(99.99).toFixed(0) + '</b> raw marks, worth ' + oldMine.toFixed(3) + ' — CAT outweighed AR by ' +
-      (oldMine/arSpread).toFixed(1) + '×.</li>' +
-    '<li>The balance of power therefore swung by roughly <b>' + ((oldMine/arSpread)/(newMine/arSpread)).toFixed(1) +
-      '×</b> toward the application form for ' + esc(me.cat) +
-      (myFloor!==genFloor ? ', and ' + ((oldGen/arSpread)/(newGen/arSpread)).toFixed(1) + '× for General' : '') + '.</li>' +
-    '<li>You can always find more marks. You cannot find more than 100th percentile. That is the whole mechanism, and no amount of preparation changes it.</li></ul>' +
-    '<p style="margin:11px 0 0;font-size:12px;color:var(--muted)">CAT ' + curveLabel() +
-    ' curve. The percentile figures are exact. The 18–38 rating spread is an assumption about who actually clears the floor, not something IIMA published.</p>';
+    '<li>Under last year&rsquo;s formula the same band ran from <b class="isold">' + marksAt(myFloor).toFixed(0) + '</b> to <b class="isold">' + marksAt(99.99).toFixed(0) +
+      '</b> raw marks and was worth ' + oldMine.toFixed(3) + '. ' +
+      (oldMine >= arSpreadOld ? 'There, CAT outweighed the same AR spread by ' + (oldMine/arSpreadOld).toFixed(1) + '×.' : 'Still less than the AR spread, but far closer than now.') + '</li>' +
+    '<li>You can always find more marks. You cannot score above the 100th percentile. That ceiling is the whole mechanism.</li></ul>' +
+    '<p style="margin:11px 0 0;font-size:12px;color:var(--muted)">Last year&rsquo;s figures use the CAT ' + curveLabel() + ' curve (Advanced, chapter&nbsp;2). The 18–38 spread is the one assumption in this section.</p>';
 
   /* --- 2. what the common table did to this degree --- */
   var ug_old = look(UG_OLD[me.ac], me.ug), ug_new = bandNew(me.ug);
@@ -1199,31 +1201,33 @@ function renderStructural(){
   var dUG = ug_old - ug_new, d12 = t12_old - t12_new, dTot = arOld(me) - arNew(me);
   var head, body;
   if(dTot > 0.001){
-    head = 'The common table cost this profile ' + f(dTot,1) + ' ' + pl(dTot,'point','points') + ', and nobody announced it.';
+    head = 'The new scoring table cost this profile ' + f(dTot,1) + ' ' + pl(dTot,'point','points') + ', and nobody announced it.';
     body = 'Old <b>' + AC_NAME[me.ac] + '</b> paid <b class="isold">' + ug_old + '</b> for a bachelor’s of ' + me.ug.toFixed(2) +
-      ' %; the new common table pays <b class="isnew">' + ug_new + '</b>' + (dUG>0 ? ' — ' + dUG + ' ' + pl(dUG,'point','points') + ' gone' : '') + '. ' +
+      ' %; the new table pays <b class="isnew">' + ug_new + '</b>' + (dUG>0 ? ' — ' + dUG + ' ' + pl(dUG,'point','points') + ' gone' : '') + '. ' +
       (d12>0 ? 'The old <b>' + esc(me.stream) + '</b> Class-12 table paid <b class="isold">' + t12_old + '</b> for ' + me.p12.toFixed(2) +
-        ' % where the common table pays <b class="isnew">' + t12_new + '</b>, costing another ' + d12 + '. ' : '') +
+        ' % where the new table pays <b class="isnew">' + t12_new + '</b>, costing ' + (dUG>0 ? 'another ' : '') + d12 + '. ' : '') + (dUG<0 ? 'The degree itself gained ' + (-dUG) + ' ' + pl(-dUG,'point','points') + ', but not enough to offset that. ' : '') +
       'Same marksheets, <b>' + f(dTot,1) + ' ' + pl(dTot,'point','points') + ' lighter</b> — <b class="isnew">' + f(dTot*rate,2) +
-      ' percentile points</b> of CAT handed away by a table rewrite.';
+      ' percentile points</b> of CAT, handed away by a table change.';
   } else if(dTot < -0.001){
-    head = 'The common table handed this profile ' + f(-dTot,1) + ' ' + pl(-dTot,'point','points') + '.';
+    head = 'The new scoring table handed this profile ' + f(-dTot,1) + ' ' + pl(-dTot,'point','points') + '.';
     body = 'Old <b>' + AC_NAME[me.ac] + '</b> paid <b class="isold">' + ug_old + '</b> for a bachelor’s of ' + me.ug.toFixed(2) +
-      ' %; the new common table pays <b class="isnew">' + ug_new + '</b>. This is the minority case — it happens mostly to aggregates in the 60–65 range on the old engineering table, which was the harshest of the five. Worth <b class="isnew">' +
+      ' %; the new table pays <b class="isnew">' + ug_new + '</b>. This is the rare case: it happens only to engineering, science or other degrees between 55 and 65&nbsp;%, where the old table was the harshest of the five. Worth <b class="isnew">' +
       f(-dTot*rate,2) + ' percentile points</b> in your favour.';
   } else {
-    head = 'The common table left this profile exactly where it was.';
-    body = 'Old <b>' + AC_NAME[me.ac] + '</b> and the new common table both pay <b>' + ug_new + '</b> for a bachelor’s of ' +
-      me.ug.toFixed(2) + ' %, and Class 12 comes out level too. That is the narrow set the rewrite passed over; most profiles lose.';
+    head = 'The new scoring table left this profile exactly where it was.';
+    body = 'Old <b>' + AC_NAME[me.ac] + '</b> and the new table both pay <b>' + ug_new + '</b> for a bachelor’s of ' +
+      me.ug.toFixed(2) + ' %, and Class 12 comes out level too. That is the narrow set the change passed over; most profiles lose.';
   }
   $('acHeadline').innerHTML = head;
   $('acBody').innerHTML = body +
     '<ul class="tight">' +
-    '<li><b>CA, CS and CMA candidates are hit hardest.</b> AC-2 paid a full 10 above 63&nbsp;%; the new table pays 3 for the same aggregate. A seven-point swing, worth ' + f(7*rate,2) + ' percentile points.</li>' +
-    '<li><b>Engineering is not spared.</b> Old AC-4 paid 8 from 75 to 85&nbsp;%, where the new table pays 5 — a three-point loss in exactly the band most B.Tech aggregates land in.</li>' +
-    '<li><b>Commerce, economics and management lose the 80 line.</b> Old AC-3 paid a full 10 above 80&nbsp;%; the new table pays 8 there and reserves 10 for above 90.</li>' +
-    '<li><b>Arts and humanities lose the Class-12 cushion.</b> The old Arts table paid 10 above 85&nbsp;%; the new one demands 90.</li>' +
-    '<li>Across every academic category the rewrite is a loss or a wash. The only profile that gains is a low-scoring engineer in the 60–65 range.</li></ul>';
+    '<li><b>CA, CS and CMA lose the most.</b> Old AC-2 paid a full 10 above 63&nbsp;%. The new table pays 3 at 63–70&nbsp;% and 5 at 70–80&nbsp;%: up to seven points gone, worth ' + f(7*rate,2) + ' percentile.</li>' +
+    '<li><b>Medicine is next.</b> Old AC-1 paid 8 from 65 to 70&nbsp;% and 10 above 70. The new table pays 3, then 5: five points gone across 65–80&nbsp;%, worth ' + f(5*rate,2) + ' percentile.</li>' +
+    '<li><b>Arts, design and law degrees lose up to five.</b> Old AC-5 paid 8 from 65 to 75&nbsp;% and 10 above 75; the new table pays 3 at 65–70&nbsp;% and 5 at 75–80&nbsp;%.</li>' +
+    '<li><b>Engineering is not spared.</b> Old AC-4 paid 8 from 75 to 85&nbsp;% and 10 above 85. The new table pays 5 at 75–80&nbsp;% and 8 at 85–90&nbsp;%: three points lost where many B.Tech aggregates land, two more just below 90.</li>' +
+    '<li><b>Commerce, economics and management lose across 65–90&nbsp;%.</b> Old AC-3 paid 5 from 65 to 70&nbsp;%, 8 from 70 to 80 and 10 above 80; the new table pays 3, then 5, then 8 until 90: two points gone, then three, then two.</li>' +
+    '<li><b>Commerce and Arts Class 12 lose their softer bands.</b> The old tables paid 8 above 75&nbsp;% (Commerce) and 10 above 85&nbsp;% (Arts); the new table needs 80 and 90. Science Class 12 is unchanged.</li>' +
+    '<li><b>Almost nobody gains.</b> The only gain anywhere is one point, for an engineering, science or other degree between 55 and 65&nbsp;%.</li></ul>';
 
   /* --- 3. what is locked and what is live --- */
   var locked = [], live = [];
@@ -1236,7 +1240,7 @@ function renderStructural(){
     else locked.push({k:'Bachelor’s', v:me.ug.toFixed(2)+' %', worth:(10-bandNew(me.ug))*rate, why:'marked as final'});
   }
   if(wx(me.wx)<5){
-    if(me.wxLive) live.push({k:'Work experience', v:me.wx+' months', worth:(5-wx(me.wx))*rate, how:'every month from the twelfth to the thirty-sixth adds 0.20 AR points'});
+    if(me.wxLive) live.push({k:'Work experience', v:me.wx+' months', worth:(5-wx(me.wx))*rate, how:'every month from the twelfth to the thirty-sixth adds 0.20 AR points, but only months completed before the form&rsquo;s cut-off date count'});
     else locked.push({k:'Work experience', v:me.wx+' months', worth:(5-wx(me.wx))*rate, why:'no further months can accrue before the form closes'});
   }
   if(me.g==='m') locked.push({k:'Gender', v:'male', worth:3*rate, why:'not a variable'});
@@ -1247,23 +1251,23 @@ function renderStructural(){
   if(locked.length===0 && live.length===0){
     h = 'This profile is at the Application Rating ceiling — 38 out of 38. There is nothing left to buy, and every percentile point from here has to come out of CAT itself.';
   } else {
-    h = 'Of the Application Rating this profile does not hold, <b>' + f(lockedTotal,2) + ' percentile ' + pl(lockedTotal,'point','points') +
-        '</b> ' + pl(locked.length,'is','are') + ' locked and <b class="isnew">' + f(liveTotal,2) + '</b> ' + pl(live.length,'is','are') +
-        ' still reachable. ' +
-        (lockedTotal > liveTotal*2
-          ? 'The larger number is the one that cannot be moved, which is the uncomfortable shape of this policy: most of the rating was decided before anyone started preparing for CAT.'
-          : 'Unusually, the reachable half is the larger one — there is real work available here.');
+    h = 'Of the AR this profile does not hold, <b>' + f(lockedTotal,2) + '</b> percentile points are fixed and <b class="isnew">' + f(liveTotal,2) + '</b> can still be won. ' +
+        (lockedTotal > liveTotal + 0.005
+          ? 'The larger share cannot be moved: most of the rating was decided before anyone started preparing for CAT.'
+          : liveTotal > lockedTotal + 0.005
+          ? 'Unusually, the share you can still win is the larger one, so there is real work available here.'
+          : 'The two shares are equal.');
     h += '<ul class="tight">';
     live.forEach(function(l){
-      h += '<li><b>' + l.k + ' (' + l.v + ') is still live</b> — ' + l.how + '. Reaching the top band is worth <b class="isnew">' +
+      h += '<li><b>' + l.k + ' (' + l.v + ') can still change</b>: ' + l.how + '. Reaching the top band is worth <b class="isnew">' +
            f(l.worth,2) + ' CAT percentile points</b>.</li>';
     });
     locked.forEach(function(l){
-      h += '<li><b>' + l.k + ' (' + l.v + ') is locked</b> — ' + l.why + '. That is <b>' + f(l.worth,2) +
+      h += '<li><b>' + l.k + ' (' + l.v + ') is fixed</b>: ' + l.why + '. That is <b>' + f(l.worth,2) +
            ' percentile ' + pl(l.worth,'point','points') + '</b> conceded permanently to anyone who holds it.</li>';
     });
     h += '</ul>';
-    h += '<p style="margin:11px 0 0">Locked is not the same as irrelevant: it sets the height from which CAT has to start. ' +
+    h += '<p style="margin:11px 0 0">Fixed is not the same as irrelevant: it sets the height from which CAT has to start. ' +
          'It does mean that effort spent grieving a closed boundary is effort not spent on an open one.</p>';
   }
   $('leverBody').innerHTML = h;
@@ -1284,7 +1288,7 @@ function renderDivisor(){
 
   var rows = [38,37,36,35,34].map(function(T){
     var mine = net(T), el = netElite(T);
-    return '<tr' + (T===Math.round(S.div)?' class="mine"':'') + '><td class="num">' + T + '</td>' +
+    return '<tr' + (T===S.div?' class="mine"':'') + '><td class="num">' + T + '</td>' +
       '<td class="num">' + (0.35/T/0.0065).toFixed(3) + '</td>' +
       '<td class="num ' + (mine<-0.005?'vnew':mine>0.005?'vold':'dim') + '">' + sgn(mine,2) + '</td>' +
       '<td class="num ' + (el>0.005?'vold':'dim') + '">' + sgn(el,2) + '</td></tr>';
@@ -1292,27 +1296,27 @@ function renderDivisor(){
 
   var head, lead;
   if(d > 0.001){
-    head = 'Your rating fell ' + f(d,1) + ' ' + pl(d,'point','points') + ' — but so did the number it gets divided by.';
-    lead = 'Everything above holds the divisor at <b>38</b>, the published figure for the old cycle. That is almost certainly too high for the new one, and it matters in your favour.' +
+    head = 'Your AR fell ' + f(d,1) + ' ' + pl(d,'point','points') + ' — but so did the number it gets divided by.';
+    lead = 'The figures elsewhere on this page use a top-50 average of <b>' + S.div + '</b>' + (S.div===38 ? ', last cycle&rsquo;s published figure. It may be too high for this cycle, and if it is, that works in your favour.' : ', the value set in Advanced.') +
       '<ul class="tight">' +
-      '<li><b>The top of the pile did not move.</b> A candidate above 90 in all three marks with three years of work still scores the full 38, under either set of tables. The common table took nothing from them.</li>' +
+      '<li><b>The top of the pile did not move.</b> A non-male candidate above 90 in all three marks with three or more years of work still scores the full 38, under either set of tables. The new table took nothing from them.</li>' +
       '<li><b>But reaching the top got much harder.</b> The old tables had several routes to a perfect degree score — a CA needed only 63&nbsp;%, a management degree only 80&nbsp;%, an Arts Class&nbsp;12 only 85&nbsp;%. The new table has exactly one route: above 90, on all three. Fewer people get there.</li>' +
-      '<li><b>So the top-50 average should fall</b>, and it was already below the maximum in two of the three published years — 35 for 2024–26, 37 for 2025–27 — back when the tables were <em>more</em> generous.</li>' +
+      '<li><b>So the top-50 average may fall</b>, though with lakhs of applicants fifty maxed-out profiles may still exist. It was already below the maximum in two of the three published years — 35 for 2024–26, 37 for 2025–27 — back when the tables were <em>more</em> generous.</li>' +
       '<li><b>A smaller divisor makes every point you kept worth more.</b> That is the offset.</li></ul>' +
       '<p style="margin:12px 0 6px">Where the two effects cancel for your profile:</p>' +
       '<p class="bignum"><span class="mono">' + f(breakEven,2) + '</span> <span class="bignum-cap">break-even divisor</span></p>' +
-      '<p style="margin:0 0 12px">If the 2027–29 top-50 average lands there, the table rewrite costs you nothing. Above it you are worse off than under the old policy; below it you are better off. ' +
+      '<p style="margin:0 0 12px">If the 2027–29 top-50 average lands there, the new table costs you nothing. Above it you are worse off than under the old policy; below it you are better off. ' +
       (breakEven < 34
-        ? 'At <b>' + f(breakEven,2) + '</b> that is a long way under every published figure, so on the evidence you stay worse off.'
+        ? 'At <b>' + f(breakEven,2) + '</b> that is below every published figure (lowest: 35), so on the evidence you stay worse off.'
         : breakEven < 35
         ? 'At <b>' + f(breakEven,2) + '</b> it sits just below the lowest ever published (35), so the loss is probably real but much smaller than the flat-38 figure suggests.'
         : 'At <b>' + f(breakEven,2) + '</b> it is inside the published historical range, so this could genuinely go either way.') + '</p>';
   } else if(d < -0.001){
-    head = 'Your rating rose ' + f(-d,1) + ' ' + pl(-d,'point','points') + ', and a falling divisor would add to that.';
-    lead = 'You are in the minority the common table helped. On top of that, the divisor — the average rating of the top 50 — should itself fall, because the new table makes a perfect rating much harder to reach than the old one did. A smaller divisor makes every point worth more, so both effects run your way.<p style="margin:12px 0 6px">Where your gain would have been zero:</p><p class="bignum"><span class="mono">' + f(breakEven,2) + '</span> <span class="bignum-cap">break-even divisor</span></p>';
+    head = 'Your AR rose ' + f(-d,1) + ' ' + pl(-d,'point','points') + ', and a falling divisor would add to that.';
+    lead = 'You are in the minority the new scoring table helped. On top of that, the divisor — the average AR of the top 50 — may itself fall, because the new table makes a perfect rating much harder to reach than the old one did. A smaller divisor makes every point worth more, so both effects run your way.<p style="margin:12px 0 6px">Where your gain would have been zero:</p><p class="bignum"><span class="mono">' + f(breakEven,2) + '</span> <span class="bignum-cap">break-even divisor</span></p>';
   } else {
-    head = 'Your rating did not move — so the divisor decides everything.';
-    lead = 'The common table left your rating exactly where it was, which means the only thing that changes your position is the divisor: the average rating of the top 50 applicants. The new table makes a perfect rating harder to reach, so that average should fall, and a smaller divisor makes every point you hold worth more. For you the rewrite is a straight gain in whatever amount the divisor drops.';
+    head = 'Your AR did not move, so the divisor decides everything.';
+    lead = 'The new table left your AR exactly where it was, which means the only thing that changes your position is the divisor: the average rating of the top 50 applicants. The new table makes a perfect rating harder to reach, so that average may fall, and a smaller divisor makes every point you hold worth more. For you, any fall in the divisor is a straight gain.';
   }
   $('divHeadline').innerHTML = head;
   $('divisorBody').innerHTML = lead +
@@ -1321,18 +1325,18 @@ function renderDivisor(){
     '<th>Net change for you</th><th>Net change at AR 38</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
     '<p style="margin:12px 0 0"><b>Read the last column.</b> A candidate already at the maximum loses nothing to the table and <em>gains</em> from every point the divisor falls. ' +
-    'A candidate in the middle loses to the table first and only claws part of it back. The rewrite is not neutral between them — it costs the middle and pays the top.</p>' +
-    '<p style="margin:10px 0 0;font-size:12px;color:var(--muted)">The direction of the divisor move follows from the tables and is firm. The size is not: IIMA has never published it for 2027–29, and the figure above is the slider in chapter 2, not a fact.</p>';
+    'A candidate in the middle loses to the table first and only claws part of it back. If the divisor falls, the new rules are not neutral between them: they cost the middle and pay the top.</p>' +
+    '<p style="margin:10px 0 0;font-size:12px;color:var(--muted)">The new table makes 38 harder to reach, so the average may fall, but fifty applicants can still max it out and IIMA has not published the 2027–29 figure. The highlighted row is the Advanced setting in chapter 2, not a fact.</p>';
 }
 
-/* ---------- chart ---------- */
+/* ---------- curve provenance ---------- */
 function renderQuality(){
   var parts = [];
   ['2022','2023','2024'].forEach(function(y){
     var q = QUALITY[y]; if(!q) return;
     parts.push('<b>CAT ' + y + '</b> — ' + q.n + ' rows, ' + q.dropped + ' rejected as outliers');
   });
-  $('curveQuality').innerHTML = 'Where the curves come from: ' + parts.join(' &middot; ') +
+  $('curveQuality').innerHTML = 'Where the curves come from. ' + parts.join(' &middot; ') +
     '. For CAT 2025 there is no public scorecard dataset at all, so every 2025 option is an estimate. ' +
     '<b>Cracku</b> publishes a full table from the 55th to the 99.99th and is reproduced here exactly, smoothed between its anchors by shape-preserving interpolation that cannot overshoot them. ' +
     '<b>IMS</b> publishes from the 80th to the 99.9th. Below each provider’s lowest published anchor the curve borrows the 2023/24 proxy’s shape, so treat the bottom tail as illustrative. ' +
@@ -1341,90 +1345,48 @@ function renderQuality(){
     ' at the 99th — that spread is the honest width of the uncertainty.';
 }
 
-function renderChart(){
-  var W=760,H=310,PL=70,PR=18,PT=16,PB=42;
-  var x0 = floorPct(), x1 = 99.9;
-  var step = (x1-x0)/220, xs=[], i;
-  for(i=0;i<=220;i++) xs.push(x0 + i*step);
-  var R = S.rival;
-  var sNew = xs.map(function(x){ return newGapAt(R,x); });
-  var sOld = xs.map(function(x){ return oldGapPctAt(R,x); });
-  var all  = sNew.concat(sOld);
-  var ymax = Math.max(0.5, Math.ceil(Math.max.apply(null,all)*1.15*4)/4);
-  var ymin = Math.min(0, Math.floor(Math.min.apply(null,all)*4)/4);
-  function px(x){ return PL + (x-x0)/(x1-x0)*(W-PL-PR); }
-  function py(y){ return PT + (ymax-y)/((ymax-ymin)||1)*(H-PT-PB); }
-  function path(arr){ return arr.map(function(v,k){ return (k?'L':'M')+px(xs[k]).toFixed(1)+' '+py(v).toFixed(1); }).join(' '); }
-
-  var span = x1-x0, ticks=[], t, k;
-  var candidates = [x0, x0+span*0.25, x0+span*0.5, x0+span*0.7, x0+span*0.86, x1];
-  var minSep = span*0.07;
-  for(i=0;i<candidates.length;i++){
-    t = Math.round(candidates[i]*10)/10;
-    if(t < x0-0.01 || t > x1+0.01) continue;
-    var clash = false;
-    for(k=0;k<ticks.length;k++){ if(Math.abs(ticks[k]-t) < minSep){ clash = true; break; } }
-    if(!clash) ticks.push(t);
-  }
-  function tickLabel(v){ return (Math.abs(v-Math.round(v))<0.05) ? String(Math.round(v)) : v.toFixed(1); }
-  var gY=[], nY=5;
-  for(i=0;i<=nY;i++) gY.push(ymin + (ymax-ymin)*i/nY);
-
-  var s = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:100%;height:auto;display:block" role="img" ' +
-          'aria-label="Percentile worth of the rival advantage plotted against your operating percentile. The new-policy line is flat and solid; the old-policy line is dashed and falls away as the curve steepens.">';
-  gY.forEach(function(v){
-    s += '<line x1="'+PL+'" y1="'+py(v).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+py(v).toFixed(1)+'" stroke="#252b2e" stroke-width="1"/>';
-    s += '<text x="'+(PL-10)+'" y="'+(py(v)+4).toFixed(1)+'" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#8b969b">'+v.toFixed(2)+'</text>';
+function renderHead(){
+  var R = S.rival, fl = floorPct(), gM = oldGapMarks(R);
+  var pts = [fl,90,95,98,99,99.5].filter(function(p,i,a){ return p>=fl && a.indexOf(p)===i; });
+  if(pts.length > 5) pts.splice(pts.indexOf(99),1);
+  var gN = newGapAt(R, S.op);
+  function lab(p){ return (p%1 ? p.toFixed(1) : String(p)) + 'th'; }
+  var th = '<th>If you score</th>', rn = '<td><span class="tag new">New rules</span></td>', ro = '<td><span class="tag old">Last year</span></td>';
+  pts.forEach(function(p){
+    th += '<th>' + lab(p) + '</th>';
+    rn += '<td class="num vnew">' + sgn(newGapAt(R,p),2) + '</td>';
+    ro += '<td class="num ' + (oldGapOff(R,p)?'dim':'vold') + '">' + oldGapTxt(R,p) + '</td>';
   });
-  if(ymin<0 && ymax>0){
-    s += '<line x1="'+PL+'" y1="'+py(0).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+py(0).toFixed(1)+'" stroke="#394246" stroke-width="1"/>';
+  $('headTable').innerHTML = '<thead><tr>' + th + '</tr></thead><tbody><tr>' + rn + '</tr><tr>' + ro + '</tr></tbody>';
+  var lo = pts[0], hi = pts[pts.length-1], note;
+  if(Math.abs(gN)<0.005 && Math.abs(gM)<0.01){
+    note = 'The two profiles are identical, so there is no head start to show. Change something about the rival above.';
+  } else if(Math.abs(gM)<0.01){
+    note = 'Under last year&rsquo;s tables this rival had no advantage at all. The whole <b class="isnew">' + sgn(gN,2) + '</b> is created by the new scoring table.';
+  } else if(oldGapOff(R,lo) || oldGapOff(R,hi)){
+    note = 'The rival&rsquo;s head start, in percentile points: <b class="isnew">' + sgn(gN,2) + '</b> under the new rules wherever you sit. ' +
+      'Under last year&rsquo;s rules the same <b class="isold">' + sgn(gM,1) + '-mark</b> gap was worth less the higher you scored. Figures marked ≥ or ≤ are bounds: the conversion ran off the end of the score curve.';
+  } else {
+    note = 'The rival&rsquo;s head start, in percentile points. Under the new rules it is <b class="isnew">' + sgn(gN,2) + '</b> wherever you sit. ' +
+      'Under last year&rsquo;s rules the same marksheet gap, <b class="isold">' + sgn(gM,1) + ' raw marks</b>, was worth <b class="isold">' + sgn(oldGapPctAt(R,lo),2) +
+      '</b> at the ' + lab(lo) + ' but only <b class="isold">' + sgn(oldGapPctAt(R,hi),2) + '</b> at the ' + lab(hi) + '. ' +
+      'Near the top each percentile point costs far more marks, so a fixed lead in marks buys fewer percentile points. The new rules removed that fade: scoring higher no longer shrinks a rival&rsquo;s marksheet advantage.';
   }
-  ticks.forEach(function(tk){
-    s += '<text x="'+px(tk).toFixed(1)+'" y="'+(H-PB+18)+'" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#8b969b">'+tickLabel(tk)+'</text>';
-  });
-  s += '<text x="'+(PL+(W-PL-PR)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#8b969b">Your CAT percentile — from the published '+esc(S.me.cat)+' floor of '+x0+' upward</text>';
-  s += '<text transform="translate(14,'+(PT+(H-PT-PB)/2)+') rotate(-90)" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#8b969b">Rival lead, in percentile points</text>';
-  s += '<line x1="'+px(S.op).toFixed(1)+'" y1="'+PT+'" x2="'+px(S.op).toFixed(1)+'" y2="'+(H-PB)+'" stroke="#8b969b" stroke-width="1.5" stroke-dasharray="2 2"/>';
-  /* OLD: dashed. NEW: solid. Redundant with colour. */
-  s += '<path d="'+path(sOld)+'" fill="none" stroke="#35c46a" stroke-width="2.4" stroke-dasharray="7 4.5" stroke-linejoin="round" stroke-linecap="round"/>';
-  s += '<path d="'+path(sNew)+'" fill="none" stroke="#ff5a52" stroke-width="2.4" stroke-linejoin="round"/>';
-  var gN=newGapAt(R,S.op), gP=oldGapPctAt(R,S.op);
-  s += '<circle cx="'+px(S.op).toFixed(1)+'" cy="'+py(gP).toFixed(1)+'" r="4" fill="#0d1012" stroke="#35c46a" stroke-width="2"/>';
-  s += '<circle cx="'+px(S.op).toFixed(1)+'" cy="'+py(gN).toFixed(1)+'" r="4" fill="#ff5a52"/>';
-  s += '</svg>';
-  $('chart').innerHTML = s;
-
-  var lo = x0, hi = 99;
-  var mLo = oldGapPctAt(R,lo), mHi = oldGapPctAt(R,hi);
-  $('chartNote').innerHTML = (Math.abs(oldGapMarks(R))<0.01)
-    ? 'Under the old tables this rival gained nothing at all, which is why the dashed line sits flat on zero. Every bit of the solid line is created by the new rules.'
-    : 'The solid line is flat because a percentile is a percentile wherever you stand. The dashed line slides downwards because the old rules paid in <em>marks</em>, and marks get much harder to earn near the top: the same <b class="isold">' +
-      oldGapMarks(R).toFixed(1) + '-mark</b> lead was worth ' + mLo.toFixed(2) + ' percentile at the ' + lo +
-      'th but only ' + mHi.toFixed(2) + ' at the 99th. ' + (function(c){
-        if(c===null)      return 'The lines never cross in this range — the new policy is harsher on you at every percentile shown.';
-        if(c===undefined) return 'The lines never cross in this range — the old policy was harsher on you at every percentile shown.';
-        return 'They cross near <b>' + c.toFixed(1) + '</b>: below that the old policy was harsher on you, above it the new one is.';
-      })(crossPoint(R));
-}
-function crossPoint(R){
-  var x0 = floorPct();
-  if(oldGapPctAt(R,x0) <= newGapAt(R,x0)) return null;
-  for(var x=x0;x<=99.9;x+=0.05){ if(oldGapPctAt(R,x) <= newGapAt(R,x)) return x; }
-  return undefined;
+  $('headNote').innerHTML = note;
 }
 
 function renderRail(){
+  var gN = newGapAt(S.rival, S.op);
   $('railMeN').textContent = arNew(S.me).toFixed(1);
-  $('railMeO').textContent = arOld(S.me).toFixed(1);
   $('railRvN').textContent = arNew(S.rival).toFixed(1);
-  $('railRvO').textContent = arOld(S.rival).toFixed(1);
-  $('railCat').textContent = S.me.cat + ' · floor ' + floorPct();
-  $('railOp').textContent  = S.op.toFixed(2);
+  $('railGap').innerHTML = gN>0.005 ? 'Rival ahead by <b class="mono isnew">' + gN.toFixed(2) + '</b> percentile pts'
+    : gN<-0.005 ? 'You ahead by <b class="mono">' + (-gN).toFixed(2) + '</b> percentile pts' : 'Level on AR';
+  $('railOpK').textContent = (curChapter===2 && S.anchor==='rival') ? 'Rival’s CAT percentile' : 'Your CAT percentile';
 }
 
 function renderAll(){
   renderRates(); renderVerdict(); renderEquiv(); renderArch();
-  renderCuts(); renderBands(); renderStructural(); renderDivisor(); renderChart(); renderQuality(); renderRail();
+  renderCuts(); renderBands(); renderStructural(); renderDivisor(); renderHead(); renderQuality(); renderRail();
 }
 
 /* ============================================================
@@ -1476,7 +1438,7 @@ function bind(id, key, kind){
     } else {
       setPath(key, el.value);
     }
-    if(key==='me.cat' && S.op < floorPct()) S.op = floorPct();
+    if((key==='me.cat' || key==='op') && S.op < floorPct()) S.op = floorPct();
     syncInputs(el); renderAll(); writeHash();
   });
 }
@@ -1492,16 +1454,14 @@ function syncInputs(skip){
   chk('mUgLive',m.ugLive); chk('mWxLive',m.wxLive);
   set('r10',r.p10); set('r12',r.p12); set('rStream',r.stream); set('rUG',r.ug);
   set('rAC',r.ac); set('rWx',r.wx); set('rGen',r.g);
-  set('opPct',S.op); set('opPctR',S.op); set('railOpR',S.op); set('anchorPct',S.op);
+  set('railOpN',S.op); set('railOpR',S.op);
   var am = S.anchor!=='rival';
   $('anchorMe').setAttribute('aria-pressed',String(am));
   $('anchorRival').setAttribute('aria-pressed',String(!am));
   set('curveSel',S.curve); set('arDiv',S.div); set('arDivR',S.div);
-  set('discR',S.disc); set('discRR',S.disc);
 
   var fl = floorPct();
-  ['opPctR','railOpR'].forEach(function(id){ var el=$(id); if(el) el.min = fl; });
-  var op = $('opPct'); if(op) op.min = fl;
+  $('railOpR').min = fl; $('railOpN').min = fl;
 
   $('arMeNew').textContent    = arNew(m).toFixed(1);
   $('arMeOld').textContent    = arOld(m).toFixed(1);
@@ -1514,13 +1474,16 @@ function syncInputs(skip){
   }
   delta($('arMeDelta'), m); delta($('arRivalDelta'), r);
 
-  document.querySelectorAll('#presets .chip').forEach(function(c,i){
-    c.setAttribute('aria-pressed', String(samePreset(PRESETS[i].p)));
-  });
+  var lv = $('rvLoad'); if(lv) lv.value = matchRival();
 }
-function samePreset(p){
-  var t = mk(p);
+function sameRival(t){
   return ['p10','p12','stream','ug','ac','wx','g'].every(function(k){ return S.rival[k]===t[k]; });
+}
+function matchRival(){
+  var i;
+  for(i=0;i<PRESETS.length;i++) if(sameRival(mk(PRESETS[i].p))) return 'p'+i;
+  for(i=0;i<ARCH.length;i++)    if(sameRival(archProfile(ARCH[i]))) return 'a'+i;
+  return '';
 }
 
 bind('m10','me.p10','num');   bind('m12','me.p12','num');   bind('mUG','me.ug','num');
@@ -1529,10 +1492,8 @@ bind('mGen','me.g');          bind('mCat','me.cat');
 bind('mUgLive','me.ugLive','bool'); bind('mWxLive','me.wxLive','bool');
 bind('r10','rival.p10','num'); bind('r12','rival.p12','num'); bind('rUG','rival.ug','num');
 bind('rWx','rival.wx','num');  bind('rStream','rival.stream'); bind('rAC','rival.ac'); bind('rGen','rival.g');
-bind('opPct','op','num');  bind('opPctR','op','num');  bind('railOpR','op','num');
-bind('anchorPct','op','num');
+bind('railOpN','op','num'); bind('railOpR','op','num');
 bind('curveSel','curve');  bind('arDiv','div','num');  bind('arDivR','div','num');
-bind('discR','disc','num');bind('discRR','disc','num');
 
 /* category selector options */
 (function(){
@@ -1543,16 +1504,22 @@ bind('discR','disc','num');bind('discRR','disc','num');
   sel.innerHTML = html;
 })();
 
-/* presets */
+/* one menu to load a rival */
 (function(){
-  var ph = $('presets');
-  PRESETS.forEach(function(pr){
-    var b = document.createElement('button');
-    b.className='chip'; b.type='button'; b.textContent=pr.n; b.setAttribute('aria-pressed','false');
-    b.addEventListener('click', function(){ S.rival = mk(pr.p); syncInputs(); renderAll(); writeHash(); });
-    ph.appendChild(b);
+  var sel = $('rvLoad'), h = '<option value="">Load a rival…</option><optgroup label="You, with one thing better">';
+  PRESETS.forEach(function(p,i){ h += '<option value="p'+i+'">'+esc(p.n)+'</option>'; });
+  h += '</optgroup><optgroup label="Realistic whole profiles">';
+  ARCH.forEach(function(a,i){ h += '<option value="a'+i+'">'+esc(a.n)+'</option>'; });
+  sel.innerHTML = h + '</optgroup>';
+  sel.addEventListener('change', function(){
+    var v = sel.value; if(!v) return;
+    var i = parseInt(v.slice(1),10);
+    S.rival = v.charAt(0)==='p' ? mk(PRESETS[i].p) : archProfile(ARCH[i]);
+    syncInputs(); renderAll(); writeHash();
   });
 })();
+$('railOpN').addEventListener('change', function(){ this.value = S.op; });
+$('goProfile').addEventListener('click', function(){ window.__showChapter(1, true); });
 
 /* anchor toggle for the equivalence table */
 ['anchorMe','anchorRival'].forEach(function(id){
@@ -1599,7 +1566,10 @@ var TABS = [], PANES = [];
     PANES.forEach(function(p,k){ p.hidden = (k!==n); });
     $('rail').style.display = (n===0 || n===5) ? 'none' : '';
     if(focus) PANES[n].focus({preventScroll:true});
+    if(n!==2 && S.anchor==='rival'){ S.anchor='me'; syncInputs(); renderAll(); }
     try{ history.replaceState(null,'', '#'+buildHash(n)); }catch(e){}
+    renderRail();
+    try{ TABS[n].scrollIntoView({block:'nearest', inline:'center'}); }catch(e){}
     window.scrollTo({top:0, behavior:'instant' in document.documentElement.style ? 'instant' : 'auto'});
   }
   TABS.forEach(function(t,k){
@@ -1624,7 +1594,7 @@ function buildHash(chapter){
   return 'c='+(curChapter+1) +
     '&me='+[m.p10,m.p12,m.stream,m.ug,m.ac,m.wx,m.g,m.cat.replace(/ /g,'_'),m.ugLive?1:0,m.wxLive?1:0].join('~') +
     '&rv='+[r.p10,r.p12,r.stream,r.ug,r.ac,r.wx,r.g].join('~') +
-    '&op='+S.op+'&cv='+S.curve+'&dv='+S.div+'&ds='+S.disc+'&an='+(S.anchor==='rival'?'r':'m');
+    '&op='+S.op+'&cv='+S.curve+'&dv='+S.div+'&an='+(S.anchor==='rival'?'r':'m');
 }
 function writeHash(){ try{ history.replaceState(null,'', '#'+buildHash()); }catch(e){} }
 
