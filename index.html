@@ -1,0 +1,1702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Converts an IIM Ahmedabad Application Rating advantage into CAT percentile points under the new PGP 2027-29 policy and CAT raw marks under the old 2026-28 policy. Built by Devansh Gohil.">
+<meta name="author" content="Devansh Gohil">
+<title>The Exchange Rate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* ============================================================
+   D - TWO-SIGNAL SLATE
+   The only colour on this page is policy identity.
+   --new  #ff5a52  NEW policy, PGP 2027-29   6.22:1 on ground   = bad news
+   --old  #35c46a  OLD policy, PGP 2026-28    8.41:1 on ground   = good news
+   Everything else is neutral. Colour is never the only signal:
+   solid vs dashed lines, labelled column groups, text tags.
+   ============================================================ */
+:root{
+  color-scheme:dark;
+  --bg:#0d1012; --surface:#15191b; --line:#252b2e; --line-strong:#394246;
+  --ink:#e8ecee; --ink-2:#bcc5c9; --muted:#8b969b;
+  /* The colour IS the verdict. Red = the new rules, and the worse deal for
+     almost everybody. Green = the old rules. A reader should be able to tell
+     whether a number is good or bad news without reading its label.
+     Both clear WCAG AA on the ground (red 6.22:1, green 8.41:1). Red and green
+     do merge for red-green colour blindness, so chart lines stay solid vs
+     dashed and every column keeps its own text label as a second signal. */
+  --new:#ff5a52; --new-dim:#b03a34; --new-tint:#2b1210;
+  --old:#35c46a; --old-dim:#217a44; --old-tint:#0d2417;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.wrap{max-width:1120px;margin:0 auto;padding-left:20px;padding-right:20px}
+@media(max-width:520px){.wrap{padding-left:16px;padding-right:16px}}
+
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.014em;text-wrap:balance;line-height:1.2}
+p{margin:0 0 12px}
+a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--line-strong)}
+a:hover{text-decoration-color:var(--ink-2)}
+.prose{max-width:66ch}
+.prose p{color:var(--ink-2)}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+em{font-style:italic;color:var(--ink)}
+b,strong{font-weight:600;color:var(--ink)}
+
+/* ---- regime identity ---- */
+.isnew{color:var(--new)} .isold{color:var(--old)}
+.tag{display:inline-block;font:600 10px/1.7 var(--sans);letter-spacing:.09em;text-transform:uppercase;
+  padding:0 7px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.tag.new{color:var(--new);background:var(--new-tint)}
+.tag.old{color:var(--old);background:var(--old-tint)}
+.tag.flat{color:var(--muted)}
+.tag.live{color:var(--new)}
+.tag.locked{color:var(--muted)}
+
+/* ---- masthead ---- */
+.mast{border-bottom:1px solid var(--line-strong);padding-block:44px 26px}
+.mast h1{font-size:clamp(27px,4.4vw,40px);letter-spacing:-.022em}
+.mast .sub{color:var(--ink-2);max-width:64ch;margin-top:14px;font-size:15.5px}
+.byline{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;
+  font-size:12px;color:var(--muted)}
+.byline .who{color:var(--ink-2);font-weight:600;letter-spacing:.01em}
+.byline .dot{color:var(--line-strong)}
+
+/* ---- sticky chrome ---- */
+.sticky{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line-strong)}
+.chapnav{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.chapnav::-webkit-scrollbar{display:none}
+.chapnav button{
+  appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  font:500 12.5px/1 var(--sans);color:var(--muted);cursor:pointer;
+  padding:14px 15px 12px;white-space:nowrap;display:flex;gap:8px;align-items:baseline;letter-spacing:.005em}
+.chapnav button .n{font-family:var(--mono);font-size:11px;color:var(--line-strong)}
+.chapnav button:hover{color:var(--ink-2)}
+.chapnav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.chapnav button[aria-selected="true"] .n{color:var(--muted)}
+
+.rail{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;
+  padding:9px 0 10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+.rail .grp{display:flex;gap:7px;align-items:baseline;white-space:nowrap}
+.rail .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.rail b{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink)}
+.rail .op{flex:1 1 190px;display:flex;gap:9px;align-items:center;min-width:170px}
+.rail input[type=range]{flex:1;min-width:90px}
+
+/* ---- sections ---- */
+main{padding-block:34px 0}
+.chapter[hidden]{display:none!important}
+.chead{padding-bottom:11px;border-bottom:1px solid var(--line-strong);margin-bottom:22px}
+.chead h2{font-size:21px}
+.chead p{margin:9px 0 0;font-size:13.5px;color:var(--muted);max-width:62ch}
+.sub-h{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin:34px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.sub-h:first-child{margin-top:0}
+.block{margin-bottom:30px}
+
+/* ---- rate cards ---- */
+.rates{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin-bottom:30px}
+.rate{background:var(--bg);padding:22px 22px 24px}
+.rate .k{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.rate .v{font-family:var(--mono);font-size:37px;font-weight:500;letter-spacing:-.035em;line-height:1;
+  font-variant-numeric:tabular-nums}
+.rate .unit{font-size:12px;color:var(--muted);margin-top:9px;font-family:var(--sans);letter-spacing:0}
+.rate .u{font-size:12.5px;color:var(--muted);margin-top:11px;line-height:1.5;max-width:34ch}
+.rate.new .v{color:var(--new)} .rate.old .v{color:var(--old)} .rate.neu .v{color:var(--ink)}
+.rate .v small{font-size:16px;color:var(--muted);letter-spacing:0;font-weight:400}
+
+/* ---- panels ---- */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(max-width:800px){.cols2{grid-template-columns:1fr}}
+.panel{background:var(--bg);padding:20px 21px 22px}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;
+  padding-bottom:9px;border-bottom:1px solid var(--line)}
+.panel-h .t{font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+
+label.f{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:center;margin-bottom:12px;font-size:13px}
+label.f > .lb{color:var(--ink-2)}
+label.f .hint{grid-column:1/-1;font-size:11px;color:var(--muted);margin-top:1px;line-height:1.45}
+input[type=number],select{
+  font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
+  border-radius:2px;padding:5px 8px;width:104px;text-align:right}
+select{width:auto;max-width:100%;min-width:132px;text-align:left;font-family:var(--sans);font-size:12.5px}
+input[type=range]{width:100%;accent-color:var(--ink-2);grid-column:1/-1;margin:2px 0 0}
+input[type=checkbox]{accent-color:var(--ink-2);width:14px;height:14px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);
+  margin-bottom:9px;cursor:pointer;line-height:1.45}
+label.chk span{flex:1}
+
+.arline{display:flex;flex-wrap:wrap;gap:7px 20px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.arline .cell{display:flex;flex-direction:column;gap:3px}
+.arline .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.arline b{font-family:var(--mono);font-size:20px;font-weight:500;line-height:1;letter-spacing:-.02em}
+.arline .n b{color:var(--new)} .arline .o b{color:var(--old)}
+.arline .d b{color:var(--ink)}
+
+.btn{appearance:none;background:var(--surface);color:var(--ink-2);border:1px solid var(--line-strong);
+  border-radius:2px;font:500 11.5px/1 var(--sans);padding:7px 11px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink-2);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chip{appearance:none;font:500 11.5px/1 var(--sans);padding:7px 11px;border-radius:2px;cursor:pointer;
+  background:transparent;color:var(--muted);border:1px solid var(--line-strong)}
+.chip:hover{color:var(--ink);border-color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+
+/* ---- verdict tiles ---- */
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line)}
+.vc{background:var(--bg);padding:17px 18px 19px}
+.vc .k{display:flex;gap:7px;align-items:center;flex-wrap:wrap;min-height:20px;margin-bottom:11px}
+.vc .kt{font-size:11px;letter-spacing:.055em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.vc .v{font-family:var(--mono);font-size:29px;font-weight:500;line-height:1;letter-spacing:-.032em;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.vc.n .v{color:var(--new)} .vc.o .v{color:var(--old)}
+.vc .n2{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+.modebar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;
+  padding:13px 15px;border:1px solid var(--line);margin-bottom:14px}
+.modebar .modelab{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modebar .chip{margin:0}
+label.f.inline{display:flex;gap:9px;align-items:center;margin:0 0 0 auto;font-size:13px}
+label.f.inline > .lb{color:var(--ink-2);white-space:nowrap}
+@media(max-width:620px){label.f.inline{margin:6px 0 0;width:100%}label.f.inline input{margin-left:auto}}
+.thsub{font-weight:400;letter-spacing:.04em;text-transform:none;opacity:.75}
+
+/* ---- tables ---- */
+.tw{overflow-x:auto;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:660px}
+th,td{padding:9px 13px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;
+  white-space:nowrap;vertical-align:bottom;border-bottom:1px solid var(--line-strong);line-height:1.5}
+thead tr.grouphead th{padding-bottom:5px;border-bottom:0}
+thead tr.grouphead th span{display:inline-block}
+th.gnew{color:var(--new)} th.gold{color:var(--old)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.mine{background:var(--surface)}
+tbody tr.mine td:first-child{box-shadow:inset 2px 0 0 var(--ink)}
+tbody tr.pick{cursor:pointer}
+tbody tr.pick:hover{background:var(--surface)}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.vnew{color:var(--new)} td.vold{color:var(--old)}
+td.dim{color:var(--muted)}
+td .sub{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;font-family:var(--sans)}
+.bar{display:block;height:3px;background:var(--new);margin-top:5px;margin-left:auto}
+.callout .tw table{min-width:440px}
+.bignum{margin:4px 0 10px;display:flex;align-items:baseline;gap:12px}
+.bignum .mono{font-family:var(--mono);font-size:34px;font-weight:500;letter-spacing:-.03em;
+  color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.bignum-cap{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.note{font-size:12.5px;color:var(--muted);margin-top:12px;max-width:74ch;line-height:1.6}
+.note b{color:var(--ink-2)}
+
+/* ---- chart ---- */
+figure{margin:0}
+.legend{display:flex;gap:8px 22px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend svg{flex:none}
+
+/* ---- callouts ---- */
+.callout{border:1px solid var(--line);padding:18px 20px;margin-bottom:1px;background:var(--bg)}
+.callout h4{font-size:14.5px;margin-bottom:10px;display:flex;gap:10px;align-items:baseline}
+.callout h4 .n{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500}
+.callout .body{font-size:13.5px;color:var(--ink-2);line-height:1.62;max-width:72ch}
+.calls{border:1px solid var(--line);background:var(--line)}
+.calls .callout{border:0;border-bottom:1px solid var(--line)}
+.calls .callout:last-child{border-bottom:0}
+ul.tight{margin:11px 0 0;padding-left:17px}
+ul.tight li{margin-bottom:7px}
+ul.tight li::marker{color:var(--line-strong)}
+
+/* ---- footer ---- */
+footer{border-top:1px solid var(--line-strong);margin-top:52px;padding-block:26px 64px;
+  font-size:12.5px;color:var(--muted);line-height:1.65}
+footer .fby{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+  padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+footer .fby .who{font-size:14px;color:var(--ink);font-weight:600;letter-spacing:-.01em}
+footer p{max-width:74ch;margin:0 0 11px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;position:fixed;z-index:99;background:var(--ink);color:var(--bg);padding:9px 13px;border-radius:2px}
+@media(prefers-reduced-motion:no-preference){.vc .v,.rate .v,.arline b{transition:color .18s ease}}
+@media(max-width:560px){
+  label.f{grid-template-columns:1fr}
+  label.f > .lb{margin-bottom:2px}
+  input[type=number],select{width:100%;max-width:100%}
+  input[type=number]{text-align:right}
+}
+@media(max-width:520px){
+  .rate .v{font-size:31px}
+  .vc .v{font-size:25px}
+  th,td{padding:8px 11px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">IIMA PGP shortlisting &middot; pre-AWT/PI stage only</div>
+  <h1 style="margin-top:13px">How much CAT does your marksheet buy?</h1>
+  <p class="sub">IIMA changed how it shortlists for the 2027&ndash;29 batch. Your CAT result used to enter the formula as a <em>raw score</em>. Now it enters as a <em>percentile</em>. That one swap changes who gets called. Put two candidates in below and this works out exactly how much CAT one of them has to make up for the gap in their marksheet &mdash; under the new rules and the old ones, side by side.</p>
+  <div class="byline">
+    <span class="who">Built by Devansh Gohil</span>
+    <span class="dot">&mdash;</span>
+    <span>independent analysis of published criteria</span>
+    <span class="dot">&middot;</span>
+    <span>CC BY-NC 4.0</span>
+    <span class="dot">&middot;</span>
+    <span>no personal data is collected, stored or transmitted</span>
+  </div>
+</header>
+</div>
+
+<div class="sticky">
+  <div class="wrap">
+    <nav class="chapnav" role="tablist" aria-label="Chapters">
+      <button role="tab" id="tab1" aria-controls="ch1" aria-selected="true"><span class="n">1</span>The exchange rate</button>
+      <button role="tab" id="tab2" aria-controls="ch2" aria-selected="false"><span class="n">2</span>The two profiles</button>
+      <button role="tab" id="tab3" aria-controls="ch3" aria-selected="false"><span class="n">3</span>What percentile you need</button>
+      <button role="tab" id="tab4" aria-controls="ch4" aria-selected="false"><span class="n">4</span>Where the line fell</button>
+      <button role="tab" id="tab5" aria-controls="ch5" aria-selected="false"><span class="n">5</span>What the levers don&rsquo;t show</button>
+      <button role="tab" id="tab6" aria-controls="ch6" aria-selected="false"><span class="n">6</span>Method &amp; notes</button>
+    </nav>
+    <div class="rail" id="rail">
+      <span class="grp"><span class="k">You</span><b id="railMeN">&mdash;</b><span class="k">new</span><b id="railMeO">&mdash;</b><span class="k">old</span></span>
+      <span class="grp"><span class="k">Rival</span><b id="railRvN">&mdash;</b><span class="k">new</span><b id="railRvO">&mdash;</b><span class="k">old</span></span>
+      <span class="grp"><span class="k">Category</span><b id="railCat" style="font-family:var(--sans);font-size:12px">&mdash;</b></span>
+      <span class="op"><span class="k">CAT pct</span><b id="railOp">&mdash;</b>
+        <input type="range" id="railOpR" min="85" max="99.9" step="0.05" aria-label="Your CAT percentile, the operating point"></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<main id="main">
+
+<!-- ══════════ 1 · THE EXCHANGE RATE ══════════ -->
+<section class="chapter" id="ch1" role="tabpanel" aria-labelledby="tab1" tabindex="-1">
+  <div class="chead">
+    <h2>1 &middot; The exchange rate</h2>
+    <p>Your marksheet is scored out of 38. This is what one of those points is worth in CAT terms.</p>
+  </div>
+
+  <div class="rates">
+    <div class="rate new">
+      <div class="k"><span class="tag new">New &middot; 2027&ndash;29</span></div>
+      <div class="v" id="rateNew">1.417</div>
+      <div class="unit">percentile points, per rating point</div>
+      <div class="u">Always the same. One rating point is worth this much whether you are sitting at the 85th or the 99.9th &mdash; the new formula pays for percentile, and a percentile is a percentile.</div>
+    </div>
+    <div class="rate old">
+      <div class="k"><span class="tag old">Old &middot; 2026&ndash;28</span></div>
+      <div class="v" id="rateOld">2.891</div>
+      <div class="unit">raw marks out of 204, per rating point</div>
+      <div class="u">Fixed in <em>marks</em> &mdash; but marks get harder to come by the higher you go, so the same advantage quietly shrank as you climbed.</div>
+    </div>
+    <div class="rate neu">
+      <div class="k"><span class="tag flat">Your rating</span></div>
+      <div class="v" id="rateAR">&mdash;</div>
+      <div class="unit" id="rateARu">your marksheet score, out of 38</div>
+      <div class="u" id="rateARn">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Both sets of rules split the decision the same way: <b>35&nbsp;% your marksheet, 65&nbsp;% your CAT</b>. The marksheet half &mdash; IIMA calls it the Application Rating &mdash; is built from the same five things either way: Class&nbsp;10, Class&nbsp;12, your degree, full-time work experience, and gender. Maximum 38.</p>
+    <p>What changed is the other 65&nbsp;%. The old rules took your <em>raw score</em> out of 204. The new rules take your <em>percentile</em> out of 100. That is the whole story, and here is why it matters: you can always score more marks, but you cannot score more than 100th percentile. Once you are past the qualifying line there is very little CAT left to win &mdash; so the marksheet, which has no such ceiling, quietly becomes the thing that decides it.</p>
+    <p>The scoring tables changed too, and far more quietly. Your degree used to be marked against one of five tables, picked by what you studied; Class&nbsp;12 against one of three, picked by your stream. Now everything is marked against a single table. For most backgrounds that means the same marksheet is simply worth fewer points than it was last year. Nobody announced it as a cut, but that is what it is.</p>
+  </div>
+
+  <div class="sub-h">What this page is and is not</div>
+  <div class="prose">
+    <p>It compares the two sets of <em>rules</em>, using one made-up pair of candidates. Fill in both profiles and it works out how far apart each set of rules puts them, and what it would take to close that gap.</p>
+    <p>It is <em>not</em> a prediction of who gets in. Different years mean different papers and different people sitting them, and the new rules are already changing who bothers applying. It also stops at the shortlist: the written test and the interview together decide 60&nbsp;% of the final call, and none of that is modelled here.</p>
+  </div>
+</section>
+
+<!-- ══════════ 2 · THE TWO PROFILES ══════════ -->
+<section class="chapter" id="ch2" role="tabpanel" aria-labelledby="tab2" tabindex="-1" hidden>
+  <div class="chead">
+    <h2>2 &middot; The two profiles</h2>
+    <p>Both sides are fully editable and work the same way. Anything you leave identical cancels out, so whatever the page shows you is caused entirely by the things you made different.</p>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <div class="panel-h">
+        <span class="t">Your profile</span>
+        <button class="btn" type="button" id="resetMe">Reset</button>
+      </div>
+      <label class="f"><span class="lb">Class 10 %</span><input type="number" id="m10" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Class 12 %</span><input type="number" id="m12" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Class 12 stream</span>
+        <select id="mStream"><option>Science</option><option>Commerce</option><option>Arts</option></select>
+        <span class="hint">Old policy only &mdash; the new common table ignores stream entirely.</span></label>
+      <label class="f"><span class="lb">Bachelor&rsquo;s %</span><input type="number" id="mUG" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Old-policy academic category</span>
+        <select id="mAC">
+          <option value="AC-1">AC-1 &mdash; Medicine &amp; Surgery</option>
+          <option value="AC-2">AC-2 &mdash; CA / CS / CMA / FIAI</option>
+          <option value="AC-3">AC-3 &mdash; Commerce / Economics / Management</option>
+          <option value="AC-4">AC-4 &amp; 6 &mdash; Engineering / Science / Other</option>
+          <option value="AC-5">AC-5 &mdash; Arts / Design / Law</option>
+        </select>
+        <span class="hint">Old policy only. The new policy scores every degree on one table.</span></label>
+      <label class="f"><span class="lb">Full-time work experience (months)</span><input type="number" id="mWx" step="1" min="0" max="120"></label>
+      <label class="f"><span class="lb">Gender</span>
+        <select id="mGen"><option value="m">Male &mdash; 0 pts</option><option value="f">Non-male &mdash; 3 pts</option></select></label>
+      <label class="f"><span class="lb">Reservation category</span>
+        <select id="mCat"></select>
+        <span class="hint">Sets the published CAT percentile floor you must clear, and the cut line you are measured against in chapter&nbsp;4.</span></label>
+
+      <div style="margin-top:15px;padding-top:14px;border-top:1px solid var(--line)">
+        <div class="eyebrow" style="margin-bottom:10px">Which levers are still live</div>
+        <label class="chk"><input type="checkbox" id="mUgLive"><span>Bachelor&rsquo;s aggregate is still provisional &mdash; later marksheets can move it</span></label>
+        <label class="chk"><input type="checkbox" id="mWxLive"><span>Work experience can still accrue before the form closes</span></label>
+        <p class="hint" style="font-size:11px;color:var(--muted);margin:4px 0 0">Class&nbsp;10 and Class&nbsp;12 are final for anyone eligible to apply, so they are always shown as locked.</p>
+      </div>
+
+      <div class="arline">
+        <span class="cell n"><span class="k">AR &mdash; new</span><b id="arMeNew">&mdash;</b></span>
+        <span class="cell o"><span class="k">AR &mdash; old</span><b id="arMeOld">&mdash;</b></span>
+        <span class="cell d"><span class="k">Rewrite</span><b id="arMeDelta">&mdash;</b></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">
+        <span class="t">Rival profile</span>
+        <button class="btn" type="button" id="mirror">Mirror my profile</button>
+      </div>
+      <label class="f"><span class="lb">Class 10 %</span><input type="number" id="r10" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Class 12 %</span><input type="number" id="r12" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Class 12 stream</span>
+        <select id="rStream"><option>Science</option><option>Commerce</option><option>Arts</option></select>
+        <span class="hint">Old policy only.</span></label>
+      <label class="f"><span class="lb">Bachelor&rsquo;s %</span><input type="number" id="rUG" step="0.01" min="0" max="100"></label>
+      <label class="f"><span class="lb">Old-policy academic category</span>
+        <select id="rAC">
+          <option value="AC-1">AC-1 &mdash; Medicine &amp; Surgery</option>
+          <option value="AC-2">AC-2 &mdash; CA / CS / CMA / FIAI</option>
+          <option value="AC-3">AC-3 &mdash; Commerce / Economics / Management</option>
+          <option value="AC-4">AC-4 &amp; 6 &mdash; Engineering / Science / Other</option>
+          <option value="AC-5">AC-5 &mdash; Arts / Design / Law</option>
+        </select>
+        <span class="hint">Old policy only.</span></label>
+      <label class="f"><span class="lb">Full-time work experience (months)</span><input type="number" id="rWx" step="1" min="0" max="120"></label>
+      <label class="f"><span class="lb">Gender</span>
+        <select id="rGen"><option value="m">Male &mdash; 0 pts</option><option value="f">Non-male &mdash; 3 pts</option></select></label>
+      <label class="f"><span class="lb">Rival&rsquo;s discipline advantage</span><input type="number" id="discR" step="0.01" min="0.8" max="1.25"></label>
+      <input type="range" id="discRR" min="0.85" max="1.2" step="0.005" aria-label="Rival discipline advantage ratio">
+      <p class="hint" style="font-size:11px;color:var(--muted);margin:2px 0 12px;line-height:1.45">New policy only. Ratio of <em>your</em> discipline&rsquo;s top-1&nbsp;% divisor to the rival&rsquo;s. Above 1 means their discipline is the softer pool. IIMA has never published these divisors &mdash; 1.00 assumes you sit in the same one.</p>
+
+      <div class="arline">
+        <span class="cell n"><span class="k">AR &mdash; new</span><b id="arRivalNew">&mdash;</b></span>
+        <span class="cell o"><span class="k">AR &mdash; old</span><b id="arRivalOld">&mdash;</b></span>
+        <span class="cell d"><span class="k">Rewrite</span><b id="arRivalDelta">&mdash;</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-h">Quick changes to the rival</div>
+  <div class="chips" id="presets"></div>
+
+  <div class="sub-h">Comparison settings</div>
+  <div class="cols2">
+    <div class="panel">
+      <label class="f"><span class="lb">Your CAT percentile &mdash; the operating point</span><input type="number" id="opPct" step="0.05" min="85" max="99.99"></label>
+      <input type="range" id="opPctR" min="85" max="99.9" step="0.05" aria-label="Your CAT percentile, the operating point">
+      <p class="hint" style="font-size:11px;color:var(--muted);margin:3px 0 14px;line-height:1.45">Irrelevant to the new policy, which is linear in percentile. It decides everything on the old side, because marks and percentile trade at wildly different rates at the 90th than at the 99.5th.</p>
+
+      <label class="f"><span class="lb">Old-policy CAT curve</span>
+        <select id="curveSel">
+          <option value="2024">CAT 2024</option>
+          <option value="2023">CAT 2023</option>
+          <option value="2022">CAT 2022</option>
+          <option value="2025mean">CAT 2025 &mdash; IMS and Cracku averaged</option>
+          <option value="2025ims">CAT 2025 &mdash; IMS estimate</option>
+          <option value="2025cracku">CAT 2025 &mdash; Cracku estimate</option>
+          <option value="2025p">CAT 2025 &mdash; proxy from 2023 &amp; 2024</option>
+        </select>
+        <span class="hint">2022&ndash;24 are built from real slot-wise score calculators. Nobody publishes actual CAT-2025 scorecards, so 2025 is an estimate either way &mdash; the default averages the two coaching houses that published full tables. Provenance is printed under the chart.</span></label>
+    </div>
+    <div class="panel">
+      <label class="f"><span class="lb">Top-50 AR average, 2027&ndash;29 &mdash; unpublished</span><input type="number" id="arDiv" step="0.5" min="30" max="38"></label>
+      <input type="range" id="arDivR" min="34" max="38" step="0.5" aria-label="Top-50 AR average for 2027-29">
+      <p class="hint" style="font-size:11px;color:var(--muted);margin:3px 0 0;line-height:1.5">IIMA published <b>35</b> for 2024&ndash;26, <b>37</b> for 2025&ndash;27 and <b>38</b> for 2026&ndash;28. The maximum was 38 in all three years, so in two of them the top fifty sat <em>below</em> the maximum. That 34&ndash;38 range puts the rate between <b>1.417</b> and <b>1.584</b> percentile points per AR point &mdash; an <b>12&nbsp;%</b> band on every new-policy figure on this page. And the rewrite itself pushes this number <em>down</em>: see chapter&nbsp;5. Only the new policy uses it; the old-policy card stays pinned to the published 38.</p>
+    </div>
+  </div>
+
+  <div class="sub-h">The gap</div>
+  <p class="note" style="margin:0 0 14px" id="verdictLead">&nbsp;</p>
+  <div class="verdict">
+    <div class="vc n">
+      <div class="k"><span class="tag new">New</span><span class="kt">Percentile you must make up</span></div>
+      <div class="v" id="vNew">&mdash;</div>
+      <div class="n2" id="vNewN">&nbsp;</div>
+    </div>
+    <div class="vc o">
+      <div class="k"><span class="tag old">Old</span><span class="kt">Marks you must make up</span></div>
+      <div class="v" id="vOldM">&mdash;</div>
+      <div class="n2" id="vOldMN">&nbsp;</div>
+    </div>
+    <div class="vc o">
+      <div class="k"><span class="tag old">Old</span><span class="kt">The same gap, in percentile</span></div>
+      <div class="v" id="vOldP">&mdash;</div>
+      <div class="n2" id="vOldPN">&nbsp;</div>
+    </div>
+    <div class="vc">
+      <div class="k"><span class="tag flat">New &divide; old</span><span class="kt">How much worse it got</span></div>
+      <div class="v" id="vAmp">&mdash;</div>
+      <div class="n2" id="vAmpN">&nbsp;</div>
+    </div>
+    <div class="vc n">
+      <div class="k"><span class="tag new">New</span><span class="kt">What you need to draw level</span></div>
+      <div class="v" id="vBE">&mdash;</div>
+      <div class="n2" id="vBEN">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="sub-h">Why the same advantage is worth more now</div>
+  <figure><div id="chart"></div></figure>
+  <div class="legend">
+    <span><svg width="26" height="8" aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="#ff5a52" stroke-width="2.4"/></svg><b class="isnew" style="color:var(--new)">Solid</b>&nbsp;&mdash; new policy, flat by construction</span>
+    <span><svg width="26" height="8" aria-hidden="true"><line x1="0" y1="4" x2="26" y2="4" stroke="#35c46a" stroke-width="2.4" stroke-dasharray="6 4"/></svg><b class="isold" style="color:var(--old)">Dashed</b>&nbsp;&mdash; old policy, collapses as the curve steepens</span>
+    <span><svg width="26" height="8" aria-hidden="true"><line x1="13" y1="0" x2="13" y2="8" stroke="#8b969b" stroke-width="1.5" stroke-dasharray="2 2"/></svg>Your operating point</span>
+  </div>
+  <p class="note" id="chartNote"></p>
+  <p class="note" id="curveQuality"></p>
+
+  <div class="sub-h">Realistic rivals</div>
+  <p class="note" style="margin:0 0 12px">Complete people, not single changes. Click any row to load it into the rival panel.</p>
+  <div class="tw">
+    <table id="archTable">
+      <thead>
+        <tr class="grouphead">
+          <th></th>
+          <th colspan="2"><span class="tag new">New &middot; 2027&ndash;29</span></th>
+          <th colspan="3"><span class="tag old">Old &middot; 2026&ndash;28</span></th>
+          <th></th>
+        </tr>
+        <tr>
+          <th>Rival profile</th>
+          <th class="gnew">AR</th><th class="gnew">Percentile gap</th>
+          <th class="gold">AR</th><th class="gold">Marks gap</th>
+          <th class="gold">Old pct gap</th><th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note">Gap is measured against your profile at your operating percentile. A negative number means you lead them on Application Rating.</p>
+</section>
+
+<!-- ══════════ 3 · ONE VARIABLE AT A TIME ══════════ -->
+<section class="chapter" id="ch3" role="tabpanel" aria-labelledby="tab3" tabindex="-1" hidden>
+  <div class="chead">
+    <h2>3 &middot; What percentile do you actually need?</h2>
+    <p>Every row is the same person as you, with exactly one thing changed. Pick who you know the score for, and the table tells you what the other one has to get to draw level.</p>
+  </div>
+
+  <div class="modebar">
+    <span class="modelab">I know the score for</span>
+    <button class="chip" type="button" id="anchorMe" aria-pressed="true">Me</button>
+    <button class="chip" type="button" id="anchorRival" aria-pressed="false">The rival</button>
+    <label class="f inline"><span class="lb" id="anchorLabel">My CAT percentile</span>
+      <input type="number" id="anchorPct" step="0.05" min="50" max="99.99"></label>
+  </div>
+  <p class="note" id="equivLead" style="margin:0 0 14px"></p>
+
+  <div class="tw">
+    <table id="equivTable">
+      <thead>
+        <tr class="grouphead">
+          <th></th><th></th>
+          <th colspan="2"><span class="tag new">New &middot; 2027&ndash;29</span></th>
+          <th colspan="2"><span class="tag old">Old &middot; 2026&ndash;28</span></th>
+        </tr>
+        <tr>
+          <th>One thing changed</th>
+          <th>AR gap<br><span class="thsub">new / old</span></th>
+          <th class="gnew" id="hNewEq">Draws level at</th>
+          <th class="gnew">Head start</th>
+          <th class="gold" id="hOldEq">Draws level at</th>
+          <th class="gold">Head start</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note" id="equivNote"></p>
+
+  <div class="sub-h">Distance to the next band</div>
+  <p class="note" style="margin:0 0 12px">The tables work in steps, not slopes. Extra marks inside a band earn you nothing at all &mdash; but a single mark across a boundary is worth two to four CAT percentile points. Everything hangs on which side of a line you landed.</p>
+  <div class="tw">
+    <table id="bandTable">
+      <thead><tr>
+        <th>Input</th><th>Your value</th><th>Band</th><th>Points</th>
+        <th>Next band</th><th>Needed</th><th class="gnew">Worth (new)</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note" id="bandNote"></p>
+</section>
+
+<!-- ══════════ 4 · WHERE THE LINE FELL ══════════ -->
+<section class="chapter" id="ch4" role="tabpanel" aria-labelledby="tab4" tabindex="-1" hidden>
+  <div class="chead">
+    <h2>4 &middot; Where the line actually fell</h2>
+    <p>IIMA published the exact score the last cut-off fell at, for every category. Working backwards from those real numbers turns everything above into something you can check, instead of a ratio quoted at a percentile somebody chose.</p>
+  </div>
+
+  <div class="tw">
+    <table id="cutTable">
+      <thead>
+        <tr class="grouphead">
+          <th></th><th></th><th></th>
+          <th colspan="2"><span class="tag old">At your OLD rating</span></th>
+          <th colspan="2"><span class="tag new">At your NEW rating</span></th>
+          <th></th>
+        </tr>
+        <tr>
+          <th>Category</th>
+          <th>CAT floor</th>
+          <th>Published min CS</th>
+          <th class="gold">Marks needed</th><th class="gold">&asymp; pct</th>
+          <th class="gnew">Marks needed</th><th class="gnew">&asymp; pct</th>
+          <th>Cost of the rewrite</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note" id="cutNote"></p>
+  <p class="note">CAT floor is the published overall percentile cut-off (PT). Identical in both regimes: Table&nbsp;1 of the 2026&ndash;28 shortlisting criteria and Table&nbsp;4 of the 2027&ndash;29 admission procedure carry the same figures. It is a gate, not a score &mdash; clearing it only makes you eligible to be ranked.</p>
+</section>
+
+<!-- ══════════ 5 · WHAT THE LEVERS DON'T SHOW ══════════ -->
+<section class="chapter" id="ch5" role="tabpanel" aria-labelledby="tab5" tabindex="-1" hidden>
+  <div class="chead">
+    <h2>5 &middot; What the levers don&rsquo;t show</h2>
+    <p>Four effects of the rewrite that no single-variable comparison captures. The last one is the one nobody is talking about.</p>
+  </div>
+  <div class="calls">
+    <div class="callout">
+      <h4><span class="n">1</span>The Application Rating now outweighs CAT above the cut-off.</h4>
+      <div class="body" id="domBody"></div>
+    </div>
+    <div class="callout">
+      <h4><span class="n">2</span><span id="acHeadline">The common table rewrote what your degree is worth.</span></h4>
+      <div class="body" id="acBody"></div>
+    </div>
+    <div class="callout">
+      <h4><span class="n">3</span>Most of your rating was decided years ago.</h4>
+      <div class="body" id="leverBody"></div>
+    </div>
+    <div class="callout">
+      <h4><span class="n">4</span><span id="divHeadline">Your rating fell &mdash; but so did the number it gets divided by.</span></h4>
+      <div class="body" id="divisorBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 6 · METHOD & NOTES ══════════ -->
+<section class="chapter" id="ch6" role="tabpanel" aria-labelledby="tab6" tabindex="-1" hidden>
+  <div class="chead">
+    <h2>6 &middot; Method, sources and what is assumed</h2>
+    <p>Everything this page asserts, and the exact point at which it stops asserting.</p>
+  </div>
+
+  <div class="prose">
+    <div class="sub-h">The two formulas</div>
+    <p><b>New policy &mdash; PGP 2027&ndash;29, CAT-2026.</b> Raw Composite Score = 0.35 &times; (AR &divide; top-50 AR average) + 0.65 &times; (CAT total percentile &divide; 100), then normalised by the average of the top 1&nbsp;% of raw composite scores within the candidate&rsquo;s undergraduate discipline. One AR point is therefore worth 0.35 &divide; 38 &divide; 0.0065 = <span class="mono isnew">1.417</span> percentile points, everywhere on the scale. Within a discipline the normalisation divisor cancels, so it drops out of any same-discipline comparison &mdash; which is what this page measures. It does <em>not</em> cancel against the shortlist threshold, which is common across disciplines: you are not only beating a rival, you are clearing a line, and for that the divisor is decisive. IIMA has never published it.</p>
+    <p><b>Old policy &mdash; PGP 2026&ndash;28, CAT-2025.</b> CS = (AR &times; 0.35 &divide; 38) + (overall CAT score &times; 0.65 &divide; 204). One AR point = 0.35 &divide; 38 &times; 204 &divide; 0.65 = <span class="mono isold">2.891</span> raw marks. Converting those marks to percentile uses the score-versus-percentile curve for the selected year, evaluated across the whole interval rather than by a local slope.</p>
+
+    <div class="sub-h">Rating tables</div>
+    <p><b>New.</b> One common table for Class&nbsp;10, Class&nbsp;12 and bachelor&rsquo;s: 1 point at or below 55&nbsp;%, 2 above 55, 3 above 60, 5 above 70, 8 above 80, 10 above 90. Stream and discipline are ignored. Work experience pays nothing below 12 months, 0.20 per month from 12 to 36, and a flat 5 above 36. Non-male candidates score 3.</p>
+    <p><b>Old.</b> Class&nbsp;10 used the same table. Class&nbsp;12 varied by stream and bachelor&rsquo;s by one of five academic categories, each with its own band boundaries &mdash; AC-2 paid a full 10 above 63&nbsp;%, where the new table pays 3. Those tables were re-verified against the April 2026 archived IIMA admissions page.</p>
+
+    <div class="sub-h">CAT curves</div>
+    <p>2022, 2023 and 2024 are inverted from the overall-score and overall-percentile columns of slot-wise score calculators, filtered for outliers on a rolling-median residual, then made monotone by pooled-adjacent-violators regression. Three corrupt rows in the CAT-2022 sheet were inflating that year&rsquo;s 99th percentile by about 11 marks before the filter was added; the rejected-row count for each year is printed under the chart. The curves reproduce published benchmarks closely &mdash; 2024: 99th at 94.75 marks against the 95&ndash;97 published by IMS and Cracku; 2023: 99th at 76.0 against 76&ndash;78. No public dataset of actual CAT-2025 scorecards exists, so every CAT&nbsp;2025 option here is an estimate. Cracku publishes a full table from the 55th to the 99.99th percentile, reproduced exactly and smoothed between anchors with shape-preserving (PCHIP) interpolation, which by construction cannot overshoot a published point. IMS publishes from the 80th to the 99.9th. Below each provider&rsquo;s lowest anchor the curve borrows the 2023/24 proxy&rsquo;s shape, so the bottom tail of both is illustrative rather than sourced. The default is the average of the two, on the view that where two independent estimates disagree the midpoint is a better guess than either, and the gap between them is the honest measure of how little is actually known.</p>
+
+    <div class="sub-h">Comparability</div>
+    <p>The two regimes are compared as <em>mechanisms</em> &mdash; the same hypothetical pair of candidates run through two formulas. They are not a counterfactual about outcomes. CAT-2025 and CAT-2026 are different papers sat by different pools, and the 2027&ndash;29 applicant pool is itself being reshaped by the rewrite. Read &ldquo;the rewrite cost this profile two points&rdquo; as a statement about the tables, not a prediction about shortlists.</p>
+
+    <div class="sub-h">Not modelled</div>
+    <p>Everything after shortlisting. The Final Composite Score is 0.50 PI + 0.10 AWT + 0.40 normalised CS under the new policy, against 0.50 PI + 0.10 AWT + 0.25 CAT + 0.15 AR under the old &mdash; so 60&nbsp;% of the final decision is a room this page cannot see into. Sectional cut-offs, the old policy&rsquo;s Stage-1 ACRC route with its C2 and C3 academic filters (both dropped in the new policy), and the old requirement of a positive raw score in every section are all checks rather than scores, so they gate the comparison rather than shift it.</p>
+
+    <div class="sub-h">Author&rsquo;s note</div>
+    <p>I built this because a policy changed in the middle of an application cycle and nobody published the exchange rate. IIMA told applicants the weights &mdash; 35 and 65 &mdash; and left them to work out what that meant for a marksheet they could no longer change. Three findings survived every profile I ran through it, and none of them depend on whose profile it is.</p>
+    <p><b>One.</b> The percentile ceiling inverts the balance of power. Above the qualifying floor there is a fixed, small amount of CAT left to win, and the Application Rating spread is larger than it. Under the old policy the reverse was true, because raw marks kept going up. Chapter&nbsp;5 puts a number on the swing for each category.</p>
+    <p><b>Two.</b> Collapsing five academic tables into one is a loss or a wash for nearly every background. Commerce and management degrees lose the band that paid 10 above 80. Engineering loses the 75&ndash;85 band that paid 8. CA, CS and CMA candidates lose most of all, from 10 above 63&nbsp;% down to 3. The only profile that gains is a low-scoring engineer in the 60&ndash;65 range. This was never announced as a change in generosity, and arithmetically that is what it is.</p>
+    <p><b>Three.</b> The unpublished top-50 AR divisor is an 8&nbsp;% band on every new-policy figure here, and unlike the discipline divisor it does not cancel &mdash; the shortlist line is common across disciplines even though the normalisation is not. Anyone quoting a single exact number for what an AR point is worth in 2027&ndash;29, this page included, is quoting the midpoint of a range IIMA has not disclosed.</p>
+    <p>What I would take from it as an applicant: spend effort on the boundary that is still live, and stop grieving the one that closed years ago. Chapter&nbsp;3 tells you which is which for your own profile, and the honest answer for most people is that the largest single number on the page is one they cannot move.</p>
+
+    <div class="sub-h">Privacy</div>
+    <p>Nothing you type leaves your browser. There is no analytics, no cookie, no network request after the fonts load, and no server to send anything to. The permalink button encodes the two profiles into the URL fragment so you can bookmark or share a scenario; a fragment is never transmitted to any server.</p>
+  </div>
+
+  <footer>
+    <div class="fby">
+      <span class="who">Built by Devansh Gohil</span>
+      <span>Independent analysis of published IIMA criteria</span>
+      <span><a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></span>
+    </div>
+    <p><b>Licence.</b> Released under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> &mdash; reuse, private or public, requires credit to Devansh Gohil and a link back. Commercial use, including by coaching institutes and admissions consultancies, is not permitted.</p>
+    <p><b>Not affiliated.</b> Not affiliated with, endorsed by, or connected to IIM Ahmedabad or the CAT centre. Not admissions advice. Where this page and an official document disagree, the official document is right.</p>
+    <p><b>Sources.</b> <a href="https://www.iima.ac.in/sites/default/files/2026-09/AdmissionProcedure_PGP_1109_2026.pdf">IIMA Admission Procedure, PGP 2027&ndash;29</a> &middot; IIMA Shortlisting Criteria PGP 2026&ndash;28, 2025&ndash;27 and 2024&ndash;26 &middot; <a href="https://web.archive.org/web/20260413051413/https://iima.ac.in/academics/mba/admissions/indians">IIMA admissions page as of April 2026, carrying the old policy in full</a> &middot; CAT 2022&ndash;24 slot-wise score calculators &middot; <a href="https://www.mbauniverse.com/cat/score-vs-percentile">IMS, Cracku and CL published CAT-2025 estimates</a>.</p>
+  </footer>
+</section>
+
+</main>
+</div>
+
+<script id="curvedata" type="application/json">{"grid":[50.0,51.0,52.0,53.0,54.0,55.0,56.0,57.0,58.0,59.0,60.0,61.0,62.0,63.0,64.0,65.0,66.0,67.0,68.0,69.0,70.0,71.0,72.0,73.0,74.0,75.0,76.0,77.0,78.0,79.0,80.0,81.0,82.0,83.0,84.0,85.0,86.0,87.0,88.0,89.0,90.0,90.25,90.5,90.75,91.0,91.25,91.5,91.75,92.0,92.25,92.5,92.75,93.0,93.25,93.5,93.75,94.0,94.25,94.5,94.75,95.0,95.25,95.5,95.75,96.0,96.25,96.5,96.75,97.0,97.25,97.5,97.75,98.0,98.25,98.5,98.75,99.0,99.05,99.1,99.15,99.2,99.25,99.3,99.35,99.4,99.45,99.5,99.55,99.6,99.65,99.7,99.75,99.8,99.85,99.9,99.92,99.94,99.96,99.98,99.99],"curves":{"2022":[16.59,16.93,17.62,17.96,18.65,19.04,19.68,20.08,20.71,21.23,21.78,22.47,22.85,23.67,23.97,24.81,25.48,25.95,26.79,27.38,27.94,28.82,29.42,30.05,30.93,31.82,32.58,33.26,34.09,35.0,36.01,37.03,38.05,39.09,40.15,41.29,42.61,43.96,45.24,46.86,48.36,49.02,49.31,49.92,50.27,51.01,51.27,51.78,52.29,52.78,53.32,53.9,54.39,55.11,55.55,56.29,56.86,57.51,58.37,59.24,59.82,60.58,61.49,62.37,63.36,64.4,65.07,66.54,67.67,68.86,70.38,71.95,73.87,75.86,77.93,80.61,83.6,84.21,84.99,85.73,86.49,87.22,89.58,89.62,90.11,91.16,92.83,93.88,95.77,97.0,98.09,99.51,103.27,105.85,110.72,111.99,114.43,120.26,124.33,130.63],"2023":[17.2,17.57,18.07,18.41,18.93,19.28,20.0,20.2,20.66,21.13,21.56,22.09,22.55,23.07,23.75,24.06,24.56,25.1,25.69,26.19,26.85,27.35,28.01,28.68,29.26,29.94,30.7,31.34,32.06,32.88,33.67,34.47,35.19,36.2,37.18,38.21,39.31,40.46,41.72,43.05,44.54,44.88,45.31,45.66,45.99,46.56,46.98,47.66,47.88,48.4,48.87,49.37,49.86,50.44,50.98,51.57,52.15,52.76,53.46,54.14,54.84,55.61,56.41,57.24,58.09,59.05,59.99,61.04,62.18,63.3,64.63,65.97,67.46,69.24,71.1,73.42,76.03,76.67,77.28,77.96,78.66,79.41,80.41,81.24,82.23,83.26,84.21,85.36,86.68,88.08,89.52,91.64,93.8,96.7,100.48,102.17,105.5,107.71,112.5,118.19],"2024":[20.92,21.47,22.03,22.62,23.22,23.72,24.29,24.8,25.49,26.05,26.7,27.29,27.93,28.6,29.22,29.97,30.64,31.5,32.09,32.83,33.55,34.35,35.17,36.0,36.93,37.79,38.71,39.66,40.67,41.69,42.74,43.85,45.03,46.21,47.51,48.86,50.3,51.77,53.4,55.03,56.95,57.48,57.96,58.51,58.99,59.57,60.08,60.69,61.2,61.85,62.4,63.07,63.7,64.34,65.02,65.78,66.48,67.21,67.95,68.76,69.63,70.55,71.58,72.56,73.59,74.66,75.82,77.05,78.36,79.69,81.31,82.93,84.71,86.65,88.85,91.66,94.75,95.44,96.19,97.09,97.8,98.78,99.68,100.57,101.65,102.72,104.11,105.49,107.19,108.79,110.65,112.85,115.55,118.21,123.0,125.73,128.02,131.9,137.49,140.99],"2025p":[19.06,19.52,20.05,20.52,21.07,21.5,22.14,22.5,23.07,23.59,24.13,24.69,25.24,25.84,26.48,27.02,27.6,28.3,28.89,29.51,30.2,30.85,31.59,32.34,33.09,33.87,34.7,35.5,36.37,37.28,38.2,39.16,40.11,41.2,42.34,43.53,44.8,46.12,47.56,49.04,50.75,51.18,51.64,52.08,52.49,53.06,53.53,54.17,54.54,55.12,55.63,56.22,56.78,57.39,58.0,58.67,59.31,59.98,60.7,61.45,62.23,63.08,63.99,64.9,65.84,66.85,67.91,69.05,70.27,71.5,72.97,74.45,76.08,77.94,79.97,82.54,85.39,86.06,86.73,87.53,88.23,89.09,90.05,90.91,91.94,92.99,94.16,95.42,96.94,98.44,100.09,102.25,104.67,107.45,111.74,113.95,116.76,119.81,125.0,129.59],"2025ims":[18.96,19.42,19.95,20.41,20.96,21.39,22.02,22.38,22.95,23.47,24.0,24.56,25.11,25.7,26.34,26.88,27.46,28.15,28.74,29.36,30.04,30.69,31.42,32.17,32.92,33.69,34.52,35.31,36.18,37.08,38.0,39.0,40.0,41.0,42.0,43.0,44.73,46.47,48.2,49.94,51.67,52.42,53.17,53.92,54.67,55.42,56.17,56.92,57.67,58.42,59.17,59.92,60.67,61.42,62.17,62.92,63.67,64.42,65.17,65.92,66.67,67.56,68.45,69.34,70.22,71.11,72.0,72.89,73.78,74.66,75.55,76.44,77.33,79.58,81.83,84.08,86.33,87.73,89.13,90.53,91.93,93.33,94.73,96.13,97.53,98.93,100.33,102.62,104.91,107.21,109.5,111.79,114.08,116.38,118.67,121.02,124.0,127.24,132.75,137.63],"2025cracku":[17.73,18.16,18.65,19.09,19.6,20.0,20.6,21.2,21.8,22.4,23.0,23.59,24.18,24.77,25.37,26.0,26.67,27.36,28.07,28.79,29.5,30.18,30.84,31.51,32.22,33.0,33.87,34.82,35.84,36.9,38.0,39.14,40.34,41.58,42.87,44.2,45.54,46.9,48.32,49.84,51.5,51.94,52.38,52.82,53.28,53.74,54.21,54.68,55.17,55.67,56.19,56.72,57.26,57.82,58.4,58.99,59.61,60.25,60.91,61.59,62.3,63.05,63.86,64.74,65.67,66.66,67.72,68.83,70.0,71.28,72.71,74.28,76.0,77.82,79.81,82.09,84.8,85.4,86.02,86.67,87.36,88.1,88.91,89.79,90.76,91.83,93.0,94.3,95.78,97.5,99.5,101.84,104.59,107.78,111.48,113.5,116.48,120.9,128.33,132.79],"2025mean":[18.34,18.79,19.3,19.75,20.28,20.7,21.31,21.79,22.38,22.94,23.5,24.08,24.64,25.24,25.86,26.44,27.06,27.76,28.4,29.08,29.77,30.44,31.13,31.84,32.57,33.34,34.2,35.06,36.01,36.99,38.0,39.07,40.17,41.29,42.44,43.6,45.14,46.68,48.26,49.89,51.58,52.18,52.78,53.37,53.98,54.58,55.19,55.8,56.42,57.04,57.68,58.32,58.96,59.62,60.28,60.96,61.64,62.34,63.04,63.76,64.48,65.31,66.16,67.04,67.94,68.88,69.86,70.86,71.89,72.97,74.13,75.36,76.66,78.7,80.82,83.08,85.56,86.56,87.57,88.6,89.65,90.72,91.82,92.96,94.15,95.38,96.66,98.46,100.34,102.35,104.5,106.82,109.34,112.08,115.08,117.26,120.24,124.07,130.54,135.21]},"quality":{"2022":{"n":2771,"dropped":34,"maxres":73.17,"thr":1.5},"2023":{"n":4274,"dropped":58,"maxres":27.44,"thr":1.5},"2024":{"n":2589,"dropped":17,"maxres":9.67,"thr":1.5},"2025cracku":{"anchors":16,"lo":55.0,"hi":99.99}}}</script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   DATA AND CONSTANTS  — carried across verbatim from the
+   audited build. Do not re-derive.
+   ============================================================ */
+var DATA    = JSON.parse(document.getElementById('curvedata').textContent);
+var GRID    = DATA.grid, CURVES = DATA.curves, QUALITY = DATA.quality || {};
+var TOTAL   = 204;   /* CAT-2025 total marks, published denominator   */
+var OLD_DIV = 38;    /* top-50 AR average, published for PGP 2026-28  */
+var AR_MAX  = 38;    /* 10 + 10 + 10 + 5 + 3                          */
+
+/* Published minimum Stage-2 composite scores, PGP 2026-28, and the
+   published overall CAT percentile floor (PT) for each category.
+   Floors are identical in both regimes: Table 1 of the 2026-28
+   shortlisting criteria and Table 4 of the 2027-29 admission
+   procedure carry the same numbers. */
+var CATS = {
+  'General'       :{cs:0.605604, pt:95, sec:85},
+  'EWS'           :{cs:0.529701, pt:95, sec:85},
+  'NC-OBC'        :{cs:0.511349, pt:90, sec:80},
+  'SC'            :{cs:0.453585, pt:85, sec:75},
+  'ST'            :{cs:0.382786, pt:75, sec:65},
+  'PwD (General)' :{cs:0.467209, pt:85, sec:75},
+  'PwD (EWS)'     :{cs:0.365250, pt:85, sec:75},
+  'PwD (NC-OBC)'  :{cs:0.318960, pt:80, sec:70},
+  'PwD (SC)'      :{cs:0.275773, pt:75, sec:65},
+  'PwD (ST)'      :{cs:0.588713, pt:65, sec:55}
+};
+var CAT_KEYS = Object.keys(CATS);
+
+/* ---------- rating tables ---------- */
+function bandNew(x){ if(x<=55)return 1; if(x<=60)return 2; if(x<=70)return 3; if(x<=80)return 5; if(x<=90)return 8; return 10; }
+var NEW_BOUNDS = [55,60,70,80,90];
+var B12_OLD = {
+  Science :[[55,1],[60,2],[70,3],[80,5],[90,8],[1e9,10]],
+  Commerce:[[50,1],[55,2],[65,3],[75,5],[90,8],[1e9,10]],
+  Arts    :[[45,1],[50,2],[60,3],[70,5],[85,8],[1e9,10]]
+};
+var UG_OLD = {
+  'AC-1':[[55,1],[60,2],[62,3],[65,5],[70,8],[1e9,10]],
+  'AC-2':[[50,1],[53,2],[55,3],[57,5],[63,8],[1e9,10]],
+  'AC-3':[[55,1],[60,2],[65,3],[70,5],[80,8],[1e9,10]],
+  'AC-4':[[60,1],[65,2],[70,3],[75,5],[85,8],[1e9,10]],
+  'AC-5':[[50,1],[55,2],[60,3],[65,5],[75,8],[1e9,10]]
+};
+var AC_NAME = {
+  'AC-1':'AC-1, Medicine &amp; Surgery',
+  'AC-2':'AC-2, CA / CS / CMA / FIAI',
+  'AC-3':'AC-3, Commerce / Economics / Management',
+  'AC-4':'AC-4, Engineering / Science / Other',
+  'AC-5':'AC-5, Arts / Design / Law'
+};
+function look(tbl,x){ for(var i=0;i<tbl.length;i++){ if(x<=tbl[i][0]) return tbl[i][1]; } return 10; }
+function wx(m){ if(m<12) return 0; if(m<=36) return 0.20*(m-11); return 5; }
+function gen(g){ return g==='m'?0:3; }
+function arNew(p){ return bandNew(p.p10)+bandNew(p.p12)+bandNew(p.ug)+wx(p.wx)+gen(p.g); }
+function arOld(p){ return bandNew(p.p10)+look(B12_OLD[p.stream],p.p12)+look(UG_OLD[p.ac],p.ug)+wx(p.wx)+gen(p.g); }
+
+/* ============================================================
+   DEFAULT STATE
+   The modal CAT candidate, from published demographics:
+   male (62.4 % of the 2.58 lakh who sat CAT 2025), engineering
+   background (60.87 % of the IIMA PGP 2026-28 intake), General
+   category, 12 months of work experience. Marks are illustrative
+   — no percentile distribution for the CAT pool is published.
+   The rival opens as the same person, non-male.
+   ============================================================ */
+var DEF_ME = {p10:88, p12:85, stream:'Science', ug:76, ac:'AC-4', wx:12, g:'m',
+              cat:'General', ugLive:true, wxLive:false};
+var DEF_RV = {p10:88, p12:85, stream:'Science', ug:76, ac:'AC-4', wx:12, g:'f'};
+
+var S = {
+  me   : cp(DEF_ME),
+  rival: cp(DEF_RV),
+  op   : 95, curve:'2025mean', div:38, disc:1.00, anchor:'me'
+};
+function cp(o){ var r={},k; for(k in o) if(Object.prototype.hasOwnProperty.call(o,k)) r[k]=o[k]; return r; }
+function clamp(v,lo,hi){ return v<lo?lo:(v>hi?hi:v); }
+function floorPct(){ return CATS[S.me.cat].pt; }
+
+/* ---------- curve interpolation (verbatim) ---------- */
+function marksAt(pct){
+  var c = CURVES[S.curve], g = GRID;
+  if(pct<=g[0]) return c[0];
+  if(pct>=g[g.length-1]) return c[c.length-1];
+  for(var i=1;i<g.length;i++){ if(pct<=g[i]){
+    var t=(pct-g[i-1])/(g[i]-g[i-1]); return c[i-1]+t*(c[i]-c[i-1]); } }
+  return c[c.length-1];
+}
+function pctAt(marks){
+  var c = CURVES[S.curve], g = GRID;
+  if(marks<=c[0]) return g[0];
+  if(marks>=c[c.length-1]) return g[g.length-1];
+  for(var i=1;i<c.length;i++){ if(marks<=c[i]){
+    var t=(marks-c[i-1])/((c[i]-c[i-1])||1e-9); return g[i-1]+t*(g[i]-g[i-1]); } }
+  return g[g.length-1];
+}
+
+/* ---------- exchange rates (verbatim) ---------- */
+function pctPerAR(){ return 0.35/S.div/0.0065; }
+function marksPerAR(){ return (0.35/OLD_DIV)*(TOTAL/0.65); }
+function newGapAt(rival, x){
+  var r = S.disc, T = S.div;
+  var need = (r*(0.35*arNew(rival)/T + 0.65*x/100) - 0.35*arNew(S.me)/T) * 100/0.65;
+  return need - x;
+}
+function oldGapMarks(rival){ return (arOld(rival)-arOld(S.me))*marksPerAR(); }
+function marksForCS(cs, ar){ return (cs - ar*0.35/OLD_DIV) * TOTAL/0.65; }
+function oldGapPctAt(rival, x){ return pctAt(marksAt(x) + oldGapMarks(rival)) - x; }
+
+/* ---------- formatting ---------- */
+function f(n,d){ if(!isFinite(n)) return '—'; return n.toFixed(d==null?2:d); }
+function sgn(n,d){ if(!isFinite(n)) return '—'; return (n>0?'+':'') + n.toFixed(d==null?2:d); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function $(id){ return document.getElementById(id); }
+function pl(n,one,many){ return n===1?one:many; }
+
+/* ---------- presets, relative to your own profile ---------- */
+var PRESETS = [
+  {n:'Mirror me',          p:{}},
+  {n:'+ gender diversity', p:{g:'f'}},
+  {n:'+ 10th above 90',    p:{p10:92}},
+  {n:'+ 12th above 90',    p:{p12:92}},
+  {n:'+ bachelor above 90',p:{ug:92}},
+  {n:'+ 2 yrs work-ex',    p:{wx:24}},
+  {n:'+ 3 yrs work-ex',    p:{wx:40}},
+  {n:'All academics 90+',  p:{p10:92,p12:92,ug:92}},
+  {n:'Maximum AR 38',      p:{p10:95,p12:95,ug:95,wx:40,g:'f'}}
+];
+
+/* ---------- whole-profile rivals, absolute ---------- */
+var ARCH = [
+  {n:'Your exact twin, non-male', d:'Every number matched, gender the only difference', rel:{g:'f'}},
+  {n:'Male engineer, fresher',    d:'88 / 85 Science / 76 B.Tech / 0 months',
+     abs:{p10:88,p12:85,stream:'Science',ug:76,ac:'AC-4',wx:0,g:'m'}},
+  {n:'Female engineer, 2 years',  d:'92 / 89 Science / 78 B.Tech / 24 months',
+     abs:{p10:92,p12:89,stream:'Science',ug:78,ac:'AC-4',wx:24,g:'f'}},
+  {n:'Female CA, 30 months',      d:'88 / 92 Commerce / 68 CA aggregate',
+     abs:{p10:88,p12:92,stream:'Commerce',ug:68,ac:'AC-2',wx:30,g:'f'}},
+  {n:'Male BBA all-rounder',      d:'94 / 95 Commerce / 91 BBA, no work-ex',
+     abs:{p10:94,p12:95,stream:'Commerce',ug:91,ac:'AC-3',wx:0,g:'m'}},
+  {n:'Consultant, 3+ years, non-male', d:'91 / 93 Science / 88 engineering, 40 months',
+     abs:{p10:91,p12:93,stream:'Science',ug:88,ac:'AC-4',wx:40,g:'f'}},
+  {n:'Arts graduate, female, 1 year',  d:'86 / 88 Arts / 82 BA, 12 months',
+     abs:{p10:86,p12:88,stream:'Arts',ug:82,ac:'AC-5',wx:12,g:'f'}},
+  {n:'Ceiling profile',           d:'Above 90 everywhere, 3+ years, non-male',
+     abs:{p10:95,p12:95,stream:'Science',ug:95,ac:'AC-4',wx:40,g:'f'}}
+];
+function mk(patch){
+  var base = {p10:S.me.p10,p12:S.me.p12,stream:S.me.stream,ug:S.me.ug,ac:S.me.ac,wx:S.me.wx,g:S.me.g};
+  var k; for(k in patch) if(Object.prototype.hasOwnProperty.call(patch,k)) base[k]=patch[k];
+  return base;
+}
+function archProfile(a){ return a.rel ? mk(a.rel) : cp(a.abs); }
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderRates(){
+  var an = arNew(S.me), ao = arOld(S.me), d = ao - an;
+  $('rateNew').textContent = pctPerAR().toFixed(3);
+  $('rateOld').textContent = marksPerAR().toFixed(3);
+  $('rateAR').innerHTML = an.toFixed(1) + ' <small>/ ' + AR_MAX + '</small>';
+  $('rateARu').textContent = 'Application Rating under the new common table';
+  $('rateARn').innerHTML = d > 0.001
+    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables. The rewrite cost this profile <b>' + f(d,1) + ' ' + pl(d,'point','points') + '</b> before any rival is considered — worth <b>' + f(d*pctPerAR(),2) + ' CAT percentile points</b>.'
+    : d < -0.001
+    ? 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables, so the rewrite <em>gained</em> this profile <b>' + f(-d,1) + ' ' + pl(-d,'point','points') + '</b>. That is the uncommon case; it happens mainly to lower-scoring engineering aggregates.'
+    : 'The same marksheets scored <b class="isold">' + ao.toFixed(1) + '</b> under the old tables — identical. This profile sits in the narrow set the table rewrite left untouched.';
+}
+
+function curveLabel(){
+  return ({'2022':'2022','2023':'2023','2024':'2024','2025p':'2025 proxy',
+           '2025ims':'2025 (IMS)','2025cracku':'2025 (Cracku)','2025mean':'2025 (IMS + Cracku)'})[S.curve];
+}
+
+function renderVerdict(){
+  var R = S.rival, x = S.op;
+  var gN = newGapAt(R,x), gM = oldGapMarks(R), gP = oldGapPctAt(R,x);
+  var same = (Math.abs(gP)<0.005 && Math.abs(gN)<0.005);
+  var amp  = same ? null : ((Math.abs(gP)<0.005) ? Infinity : gN/gP);
+  var be   = x + gN;
+
+  $('vNew').textContent = sgn(gN,2);
+  $('vNewN').innerHTML = 'Rival AR <b>' + arNew(R).toFixed(1) + '</b> against your <b>' + arNew(S.me).toFixed(1) + '</b>' +
+    (S.disc!==1 ? ', including a discipline ratio of ' + S.disc.toFixed(2) : '. Same discipline, so normalisation cancels.');
+
+  $('vOldM').textContent = sgn(gM,2);
+  $('vOldMN').innerHTML = 'Rival AR <b>' + arOld(R).toFixed(1) + '</b> against your <b>' + arOld(S.me).toFixed(1) +
+    '</b> under the old stream and academic-category tables.';
+
+  $('vOldP').textContent = sgn(gP,2);
+  $('vOldPN').innerHTML = 'At ' + x.toFixed(2) + ' on the CAT ' + curveLabel() + ' curve, ' +
+    marksAt(x).toFixed(1) + ' marks becomes ' + (marksAt(x)+gM).toFixed(1) + '.';
+
+  $('vAmp').textContent = same ? '—' : (isFinite(amp) ? amp.toFixed(2)+'×' : '∞');
+  $('vAmpN').innerHTML = same
+    ? 'The two profiles are identical, so there is no advantage to measure.'
+    : !isFinite(amp)
+    ? 'Under the old tables this rival had no advantage over you at all. The new rules create one out of nothing.'
+    : (Math.abs(gP) < 0.10
+       ? 'It says ' + amp.toFixed(1) + '×, but ignore that — the old gap here is only ' + gP.toFixed(2) +
+         ' percentile, so the ratio is dividing by almost nothing. Read the two gap figures instead.'
+       : amp>1.05 ? 'The change made this advantage ' + amp.toFixed(1) + '× stronger at the percentile you are sitting at.'
+       : amp<0.95 ? 'The change actually weakened this advantage for you here.'
+       : 'Barely changed at this percentile.');
+
+  $('vBE').textContent = (be>100 ? '>100' : be.toFixed(2));
+  $('vBEN').innerHTML = be>100
+    ? 'Out of reach. There is no CAT score that closes this gap — you would have to beat them in the written test and the interview instead.'
+    : 'You need <b>' + be.toFixed(2) + '</b> to finish level with them at ' + x.toFixed(2) + '. Under the old rules you needed ' +
+      Math.min(100, x + gP).toFixed(2) + '.';
+
+  var dn = arNew(R)-arNew(S.me), dod = arOld(R)-arOld(S.me);
+  $('verdictLead').innerHTML = (Math.abs(dn)<0.005 && Math.abs(dod)<0.005)
+    ? 'The rival is identical to you right now, so there is nothing to measure. Change something on the right-hand panel, or pick a preset.'
+    : 'The rival is <b class="isnew">' + sgn(dn,1) + '</b> marksheet points ahead of you under the new tables, and <b class="isold">' +
+      sgn(dod,1) + '</b> under the old ones. Everything below follows from that one gap.';
+}
+
+/* ── The equivalence table ─────────────────────────────────────────────
+   For each single-variable rival, answers the only two questions that
+   matter in practice: what does the other person have to score to draw
+   level, and how big a head start does the profile gap hand them?
+   Anchor flips which side's percentile is the known one. Under the new
+   policy the head start is a constant (a percentile point is a percentile
+   point). Under the old one it depends entirely on where you are sitting,
+   because marks and percentile trade at wildly different rates.
+   ──────────────────────────────────────────────────────────────────── */
+function leverRows(){
+  var me = S.me;
+  return [
+    ['They are non-male and you are not', {g:'f'}, me.g==='f'],
+    ['Their Class 10 is above 90', {p10:92}, me.p10>90],
+    ['Their Class 12 is above 90', {p12:92}, me.p12>90],
+    ['Their degree is above 90', {ug:92}, me.ug>90],
+    ['They have 1 year of work', {wx:12}, me.wx>=12],
+    ['They have 2 years of work', {wx:24}, me.wx>=24],
+    ['They have 3+ years of work', {wx:40}, me.wx>=36],
+    ['All three of their marks are above 90', {p10:92,p12:92,ug:92}, me.p10>90&&me.p12>90&&me.ug>90],
+    ['They max the form out at AR 38', {p10:95,p12:95,ug:95,wx:40,g:'f'}, arNew(me)>=38]
+  ];
+}
+
+function renderEquiv(){
+  var me = S.me, rate = pctPerAR(), A = S.op, anchorMe = (S.anchor !== 'rival');
+  var html = '';
+
+  document.getElementById('hNewEq').textContent = anchorMe ? 'They draw level at' : 'You draw level at';
+  document.getElementById('hOldEq').textContent = anchorMe ? 'They draw level at' : 'You draw level at';
+  document.getElementById('anchorLabel').textContent = anchorMe ? 'My CAT percentile' : 'Their CAT percentile';
+
+  leverRows().forEach(function(r){
+    var R = mk(r[1]);
+    var dN = arNew(R) - arNew(me);          /* rival minus me, new tables */
+    var dO = arOld(R) - arOld(me);          /* rival minus me, old tables */
+
+    /* NEW policy — linear in percentile, so the head start is a constant */
+    var eqN   = anchorMe ? A - dN*rate : A + dN*rate;
+    var headN = dN * rate;
+
+    /* OLD policy — goes through the score curve, so it depends on altitude */
+    var mA = marksAt(A), mpar = marksPerAR();
+    var eqOm = anchorMe ? mA - dO*mpar : mA + dO*mpar;
+    var eqO  = pctAt(eqOm);
+    var headO = anchorMe ? (A - eqO) : (eqO - A);
+
+    var off = (eqN > 100 || eqN < 50);
+    var offO = offCurve(eqOm);
+    var dim = Math.abs(dN) < 0.005;
+
+    html += '<tr>' +
+      '<td>' + r[0] + (r[2] ? '<span class="sub">Already true of you — no gap</span>' : '') + '</td>' +
+      '<td class="num ' + (dim?'dim':'') + '">' + sgn(dN,1) + ' <span class="dim">/ ' + sgn(dO,1) + '</span></td>' +
+      '<td class="num ' + (dim?'dim':(off?'dim':'vnew')) + '">' +
+        (dim ? '—' : (eqN>100 ? 'not possible' : eqN<50 ? 'below 50' : eqN.toFixed(2))) + '</td>' +
+      '<td class="num ' + (dim?'dim':'vnew') + '">' + (dim ? '—' : sgn(headN,2)) + '</td>' +
+      '<td class="num ' + (Math.abs(dO)<0.005?'dim':(offO?'dim':'vold')) + '">' +
+        (Math.abs(dO)<0.005 ? '—' : (offO>0 ? '≥'+eqO.toFixed(2) : offO<0 ? '≤'+eqO.toFixed(2) : eqO.toFixed(2))) + '</td>' +
+      '<td class="num ' + (Math.abs(dO)<0.005?'dim':'vold') + '">' + (Math.abs(dO)<0.005 ? '—' : sgn(headO,2)) + '</td>' +
+      '</tr>';
+  });
+  document.querySelector('#equivTable tbody').innerHTML = html;
+
+  document.getElementById('equivLead').innerHTML = anchorMe
+    ? 'You score <b>' + A.toFixed(2) + '</b>. Each row shows the percentile that rival needs to finish exactly level with you, and how much of a head start their profile alone is worth.'
+    : 'They score <b>' + A.toFixed(2) + '</b>. Each row shows the percentile <em>you</em> need to finish exactly level with them, and how much of a head start their profile alone is worth.';
+
+  /* the comparison that makes the whole page's point */
+  var Rg = mk({g:'f'});
+  var dNg = arNew(Rg) - arNew(me), dOg = arOld(Rg) - arOld(me);
+  var lo = Math.max(floorPct()+0.5, 90), hi = 99.5;
+  function pctLabel(v){ return (Math.abs(v-Math.round(v))<0.01) ? String(Math.round(v)) + 'th' : v.toFixed(1) + 'th'; }
+  function headOldAt(x){ return x - pctAt(marksAt(x) - dOg*marksPerAR()); }
+  var note;
+  if(Math.abs(dNg) < 0.005){
+    note = 'Gender is the one lever that costs nothing to hold and cannot be earned. You already hold it, so that row is blank — change something else on the rival panel to see the mechanism.';
+  } else {
+    note = 'Look at the two <b>head start</b> columns. Under the new policy the number is the same wherever you sit: <b class="isnew">' +
+      f(dNg*rate,2) + '</b> percentile, at the 85th and at the 99.9th alike, because the formula pays 65&nbsp;% for a percentile and a percentile is a percentile. ' +
+      'Under the old policy the same profile gap was worth <b class="isold">' + f(headOldAt(lo),2) + '</b> at the ' + pctLabel(lo) +
+      ' but only <b class="isold">' + f(headOldAt(hi),2) + '</b> at the ' + pctLabel(hi) + ' — it shrank as you climbed, because it was denominated in marks and marks get expensive near the top. ' +
+      'That collapse is what the rewrite removed. The head start no longer fades the harder you work.';
+  }
+  var fl = floorPct();
+  var anyBelow = leverRows().some(function(r){
+    var R = mk(r[1]), dN = arNew(R) - arNew(me);
+    if(Math.abs(dN) < 0.005) return false;
+    return (anchorMe ? A - dN*rate : A + dN*rate) < fl;
+  });
+  if(anyBelow){
+    note += ' <br><br><b>One caveat on the low numbers.</b> A draw-level percentile below <b>' + fl +
+      '</b> is arithmetic only — that is your category\u2019s published CAT floor, and anyone under it is removed before the merit list is even drawn. ' +
+      'Those rows say the marksheet gap is large enough to cancel a huge CAT gap on paper; they do not say the person would survive to be compared.';
+  }
+  document.getElementById('equivNote').innerHTML = note;
+}
+
+function renderArch(){
+  var x = S.op, html='';
+  ARCH.forEach(function(a,i){
+    var R = archProfile(a);
+    var gN = newGapAt(R,x), gM = oldGapMarks(R), gP = oldGapPctAt(R,x);
+    var verdict;
+    if(gN<=0.01)          verdict = '<span class="tag flat">you lead</span>';
+    else if(x+gN>100)     verdict = '<span class="tag new">out of reach</span>';
+    else if(gN>gP+0.5)    verdict = '<span class="tag new">worse for you now</span>';
+    else if(gP>gN+0.5)    verdict = '<span class="tag old">was worse before</span>';
+    else                  verdict = '<span class="tag flat">roughly unchanged</span>';
+    html += '<tr class="pick" data-arch="' + i + '" tabindex="0" role="button" aria-label="Load ' + esc(a.n) + ' into the rival panel">' +
+      '<td><b>' + esc(a.n) + '</b><span class="sub">' + esc(a.d) + '</span></td>' +
+      '<td class="num vnew">' + arNew(R).toFixed(1) + '</td>' +
+      '<td class="num ' + (gN>0.01?'vnew':'dim') + '">' + sgn(gN,2) + '</td>' +
+      '<td class="num vold">' + arOld(R).toFixed(1) + '</td>' +
+      '<td class="num ' + (Math.abs(gM)<0.01?'dim':'vold') + '">' + sgn(gM,2) + '</td>' +
+      '<td class="num ' + (Math.abs(gP)<0.01?'dim':'vold') + '">' + sgn(gP,2) + '</td>' +
+      '<td>' + verdict + '</td></tr>';
+  });
+  document.querySelector('#archTable tbody').innerHTML = html;
+}
+
+/* next boundary above v on the new common table */
+function nextBound(v){
+  for(var i=0;i<NEW_BOUNDS.length;i++){ if(v<=NEW_BOUNDS[i]) return NEW_BOUNDS[i]; }
+  return null;
+}
+
+function renderBands(){
+  var me = S.me, rate = pctPerAR(), html='';
+  var acad = [
+    {k:'Class 10',        v:me.p10, live:false},
+    {k:'Class 12',        v:me.p12, live:false},
+    {k:'Bachelor’s', v:me.ug,  live:!!me.ugLive}
+  ];
+  acad.forEach(function(r){
+    var pts = bandNew(r.v), nb = nextBound(r.v);
+    var tag = r.live ? '<span class="tag live">still live</span>' : '<span class="tag locked">locked</span>';
+    var bandTxt = nb===null ? 'above 90 — top band'
+                : (nb===55 ? 'at or below 55' : 'above ' + NEW_BOUNDS[NEW_BOUNDS.indexOf(nb)-1] + ', up to ' + nb);
+    if(nb===null){
+      var margin = r.v - 90;
+      html += '<tr><td>' + r.k + ' ' + tag + '</td>' +
+        '<td class="num">' + r.v.toFixed(2) + ' %</td>' +
+        '<td class="dim">' + bandTxt + '</td>' +
+        '<td class="num">10</td>' +
+        '<td class="num dim">— at the ceiling</td>' +
+        '<td class="num">margin above the line <b>' + margin.toFixed(2) + '</b></td>' +
+        '<td class="num vnew">' + f(2*rate,2) + ' secured</td></tr>';
+      return;
+    }
+    var nextPts = bandNew(nb + 0.01);
+    var need = (nb + 0.01) - r.v;
+    var worth = (nextPts - pts) * rate;
+    html += '<tr><td>' + r.k + ' ' + tag + '</td>' +
+      '<td class="num">' + r.v.toFixed(2) + ' %</td>' +
+      '<td class="dim">' + bandTxt + '</td>' +
+      '<td class="num">' + pts + '</td>' +
+      '<td class="num">above ' + nb + ' % → ' + nextPts + ' pts</td>' +
+      '<td class="num' + (r.live?'':' dim') + '">' + (r.live ? '+' + need.toFixed(2) + ' pts' : 'unreachable — needed +' + need.toFixed(2)) + '</td>' +
+      '<td class="num ' + (r.live?'vnew':'dim') + '">' + (r.live ? sgn(worth,2) : f(worth,2) + ' forgone') + '</td></tr>';
+  });
+
+  /* work experience */
+  var wpts = wx(me.wx), wtag = me.wxLive ? '<span class="tag live">still live</span>' : '<span class="tag locked">locked</span>';
+  var wband, wnext, wneed, wworth;
+  if(me.wx >= 36){
+    wband = '36+ months — top band'; wnext = '— at the ceiling'; wneed = 'nothing left to gain'; wworth = 0;
+  } else if(me.wx < 12){
+    wband = 'under 12 months — pays nothing'; wnext = '12 months → 0.2 pts';
+    wneed = '+' + (12-me.wx) + ' ' + pl(12-me.wx,'month','months'); wworth = (0.20 - wpts) * rate;
+  } else {
+    wband = '12 to 36 months — 0.2 pts a month'; wnext = '36+ months → 5 pts';
+    wneed = '+' + (36-me.wx) + ' ' + pl(36-me.wx,'month','months'); wworth = (5 - wpts) * rate;
+  }
+  html += '<tr><td>Work experience ' + wtag + '</td>' +
+    '<td class="num">' + me.wx + ' mo</td>' +
+    '<td class="dim">' + wband + '</td>' +
+    '<td class="num">' + wpts.toFixed(2) + '</td>' +
+    '<td class="num">' + wnext + '</td>' +
+    '<td class="num' + (me.wxLive?'':' dim') + '">' + wneed + '</td>' +
+    '<td class="num ' + (me.wxLive&&wworth>0?'vnew':'dim') + '">' + (wworth>0 ? (me.wxLive?sgn(wworth,2):f(wworth,2)+' forgone') : '—') + '</td></tr>';
+
+  /* gender */
+  html += '<tr><td>Gender <span class="tag locked">fixed</span></td>' +
+    '<td class="num">' + (me.g==='m'?'male':'non-male') + '</td>' +
+    '<td class="dim">' + (me.g==='m'?'0 pts':'3 pts — diversity credit') + '</td>' +
+    '<td class="num">' + gen(me.g).toFixed(2) + '</td>' +
+    '<td class="num dim">—</td><td class="num dim">—</td>' +
+    '<td class="num ' + (me.g==='m'?'dim':'vnew') + '">' + (me.g==='m' ? f(3*rate,2)+' forgone' : f(3*rate,2)+' held') + '</td></tr>';
+
+  document.querySelector('#bandTable tbody').innerHTML = html;
+
+  /* nearest boundary, in either direction, across the three academics */
+  var nearest=null;
+  acad.forEach(function(r){
+    var nb = nextBound(r.v);
+    var dist = nb===null ? (r.v - 90) : ((nb + 0.01) - r.v);
+    var above = nb===null;
+    if(!nearest || dist < nearest.dist) nearest = {k:r.k, v:r.v, dist:dist, above:above, live:r.live, nb:nb};
+  });
+  if(nearest){
+    $('bandNote').innerHTML = nearest.above
+      ? '<b>' + nearest.k + '</b> is your tightest number: ' + nearest.v.toFixed(2) + ' % sits just <b>' +
+        nearest.dist.toFixed(2) + '</b> above the 90 boundary that separates 8 points from 10. Those two points are worth <b>' +
+        f(2*rate,2) + ' CAT percentile points</b>, and the margin holding them is smaller than a single paper’s worth of moderation.'
+      : '<b>' + nearest.k + '</b> is your nearest boundary: <b>' + nearest.dist.toFixed(2) +
+        '</b> percentage points short of ' + nearest.nb + ' %. ' +
+        (nearest.live ? 'It is still live, and crossing it is worth ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' CAT percentile points.'
+                      : 'It is locked, so that distance is a permanent concession of ' + f((bandNew(nearest.nb+0.01)-bandNew(nearest.v))*rate,2) + ' percentile points to anyone on the other side of it.');
+  }
+}
+
+/* A back-solved mark can land outside the observed CAT curve. Converting it
+   to a percentile then clamps at the curve's end, which produces a precise
+   looking figure that is not one. Those cells are flagged, not printed. */
+function offCurve(marks){
+  var c = CURVES[S.curve];
+  if(marks < c[0])          return -1;
+  if(marks > c[c.length-1]) return  1;
+  return 0;
+}
+function renderCuts(){
+  var arO = arOld(S.me), arN = arNew(S.me), html='', anyOff=false;
+  CAT_KEYS.forEach(function(cat){
+    var c = CATS[cat];
+    var m28 = marksForCS(c.cs, arO), m26 = marksForCS(c.cs, arN);
+    var o28 = offCurve(m28), o26 = offCurve(m26);
+    var p28 = pctAt(m28), p26 = pctAt(m26);
+    if(o28 || o26) anyOff = true;
+    var mine = (cat === S.me.cat);
+    function pcell(p, off, cls){
+      if(!off) return '<td class="num ' + cls + '">' + p.toFixed(2) + '</td>';
+      return '<td class="num dim" title="Beyond the observed CAT ' + curveLabel() +
+             ' curve — the conversion clamps at the curve end, so this is a bound, not a value.">' +
+             (off<0 ? '≤' : '≥') + p.toFixed(2) + '</td>';
+    }
+    var cost = (o28 || o26)
+      ? '<td class="num dim" title="Not computed: at least one side of this row is off the observed curve.">—</td>'
+      : '<td class="num ' + (Math.abs(p26-p28)<0.005?'dim':'') + '">' + sgn(p26-p28,2) + '</td>';
+    html += '<tr' + (mine?' class="mine"':'') + '><td>' + esc(cat) + (mine?' <span class="tag flat">yours</span>':'') + '</td>' +
+      '<td class="num dim">' + c.pt + '</td>' +
+      '<td class="num dim">' + c.cs.toFixed(6) + '</td>' +
+      '<td class="num vold">' + m28.toFixed(1) + '</td>' + pcell(p28, o28, 'vold') +
+      '<td class="num vnew">' + m26.toFixed(1) + '</td>' + pcell(p26, o26, 'vnew') +
+      cost + '</tr>';
+  });
+  document.querySelector('#cutTable tbody').innerHTML = html;
+
+  var c  = CATS[S.me.cat];
+  var mO = marksForCS(c.cs, arO), mN = marksForCS(c.cs, arN);
+  var oO = offCurve(mO), oN = offCurve(mN);
+  var d    = pctAt(mN) - pctAt(mO);
+  var dAR  = arO - arN;
+  var lead;
+  if(oO || oN){
+    lead = 'Your own row, <b>' + esc(S.me.cat) + '</b>, falls off the end of the observed CAT ' + curveLabel() +
+      ' curve: at this Application Rating the line sits at ' +
+      ((oO>0||oN>0) ? Math.max(mO,mN).toFixed(1) + ' marks, above the highest score in the data'
+                    : Math.min(mO,mN).toFixed(1) + ' marks, below the lowest score in the data') +
+      '. That is itself the finding. A rating this far from the line is not rescued by CAT alone, and any percentile printed against it would be a clamp rather than a conversion.';
+  } else if(Math.abs(dAR) < 0.005){
+    lead = 'The rewrite left your rating unchanged, so at your own category line the two regimes ask the same thing of you. Not every profile is so lucky — change the academic category in chapter 2 and watch this row move.';
+  } else {
+    lead = 'This is the honest version of the headline. At <b>' + esc(S.me.cat) + '</b>, the percentile where a shortlist was actually decided, the ' +
+      f(Math.abs(dAR),1) + ' ' + pl(Math.abs(dAR),'point','points') + ' the rewrite ' + (dAR>0?'took away':'handed over') + ' ' +
+      pl(Math.abs(dAR),'is','are') + ' worth <b>' + Math.abs(d).toFixed(2) + ' percentile points</b>, not the ' +
+      f(Math.abs(dAR)*pctPerAR(),2) + ' that the flat new-policy rate implies. The rate is flat; the curve underneath it is not.';
+  }
+  $('cutNote').innerHTML =
+    'Minimum composite scores are the Stage-2 category figures published in the PGP 2026–28 shortlisting criteria, back-solved through that cycle’s own formula (CS = AR&nbsp;×&nbsp;0.35&nbsp;÷&nbsp;38 + score&nbsp;×&nbsp;0.65&nbsp;÷&nbsp;204) and converted on the CAT ' + curveLabel() + ' curve. ' + lead +
+    (anyOff ? ' A percentile shown as <b>≤</b> or <b>≥</b> is a bound: the marks needed fall outside the range the curve was built from, so the conversion clamps at the curve’s end and the cost column is left blank rather than filled with an artefact.' : '') +
+    ' The 2027–29 cut lines will differ — the formula changed and so will the pool. Note also <b>PwD (ST)</b> at 0.588713, higher than General: a single-candidate category, and a reminder that these are observed minima, not designed thresholds.';
+}
+
+function renderStructural(){
+  var me = S.me, T = S.div, rate = pctPerAR();
+  var myFloor = floorPct(), genFloor = CATS['General'].pt;
+
+  /* --- 1. AR outweighs CAT above the floor --- */
+  var arSpread = 0.35*(38-18)/T;                         /* AR 18 to 38 among viable applicants */
+  var newMine  = 0.65*(100-myFloor)/100, newGen = 0.65*(100-genFloor)/100;
+  var oldMine  = 0.65*(marksAt(99.99)-marksAt(myFloor))/TOTAL;
+  var oldGen   = 0.65*(marksAt(99.99)-marksAt(genFloor))/TOTAL;
+  $('domBody').innerHTML =
+    'Once you are over the qualifying line, there is only so much CAT left to win. Your category, <b>' + esc(me.cat) +
+    '</b>, has a published overall floor of <b>' + myFloor + '</b>, so the usable band runs from ' + myFloor +
+    ' to 100 and is worth <b class="isnew">' + newMine.toFixed(3) + '</b> of composite score. A realistic Application Rating spread, 18 to 38, is worth <b>' +
+    arSpread.toFixed(3) + '</b> — <b>' + (arSpread/newMine).toFixed(1) + '× more</b>.' +
+    (myFloor!==genFloor ? ' For General the floor is ' + genFloor + ', the band is worth only ' + newGen.toFixed(3) +
+      ', and AR outweighs CAT by ' + (arSpread/newGen).toFixed(1) + '× — the higher the floor, the more decisive the application form becomes.' : '') +
+    '<ul class="tight">' +
+    '<li>Under the old policy that same band ran from <b class="isold">' + marksAt(myFloor).toFixed(0) + '</b> to <b class="isold">' +
+      marksAt(99.99).toFixed(0) + '</b> raw marks, worth ' + oldMine.toFixed(3) + ' — CAT outweighed AR by ' +
+      (oldMine/arSpread).toFixed(1) + '×.</li>' +
+    '<li>The balance of power therefore swung by roughly <b>' + ((oldMine/arSpread)/(newMine/arSpread)).toFixed(1) +
+      '×</b> toward the application form for ' + esc(me.cat) +
+      (myFloor!==genFloor ? ', and ' + ((oldGen/arSpread)/(newGen/arSpread)).toFixed(1) + '× for General' : '') + '.</li>' +
+    '<li>You can always find more marks. You cannot find more than 100th percentile. That is the whole mechanism, and no amount of preparation changes it.</li></ul>' +
+    '<p style="margin:11px 0 0;font-size:12px;color:var(--muted)">CAT ' + curveLabel() +
+    ' curve. The percentile figures are exact. The 18–38 rating spread is an assumption about who actually clears the floor, not something IIMA published.</p>';
+
+  /* --- 2. what the common table did to this degree --- */
+  var ug_old = look(UG_OLD[me.ac], me.ug), ug_new = bandNew(me.ug);
+  var t12_old = look(B12_OLD[me.stream], me.p12), t12_new = bandNew(me.p12);
+  var dUG = ug_old - ug_new, d12 = t12_old - t12_new, dTot = arOld(me) - arNew(me);
+  var head, body;
+  if(dTot > 0.001){
+    head = 'The common table cost this profile ' + f(dTot,1) + ' ' + pl(dTot,'point','points') + ', and nobody announced it.';
+    body = 'Old <b>' + AC_NAME[me.ac] + '</b> paid <b class="isold">' + ug_old + '</b> for a bachelor’s of ' + me.ug.toFixed(2) +
+      ' %; the new common table pays <b class="isnew">' + ug_new + '</b>' + (dUG>0 ? ' — ' + dUG + ' ' + pl(dUG,'point','points') + ' gone' : '') + '. ' +
+      (d12>0 ? 'The old <b>' + esc(me.stream) + '</b> Class-12 table paid <b class="isold">' + t12_old + '</b> for ' + me.p12.toFixed(2) +
+        ' % where the common table pays <b class="isnew">' + t12_new + '</b>, costing another ' + d12 + '. ' : '') +
+      'Same marksheets, <b>' + f(dTot,1) + ' ' + pl(dTot,'point','points') + ' lighter</b> — <b class="isnew">' + f(dTot*rate,2) +
+      ' percentile points</b> of CAT handed away by a table rewrite.';
+  } else if(dTot < -0.001){
+    head = 'The common table handed this profile ' + f(-dTot,1) + ' ' + pl(-dTot,'point','points') + '.';
+    body = 'Old <b>' + AC_NAME[me.ac] + '</b> paid <b class="isold">' + ug_old + '</b> for a bachelor’s of ' + me.ug.toFixed(2) +
+      ' %; the new common table pays <b class="isnew">' + ug_new + '</b>. This is the minority case — it happens mostly to aggregates in the 60–65 range on the old engineering table, which was the harshest of the five. Worth <b class="isnew">' +
+      f(-dTot*rate,2) + ' percentile points</b> in your favour.';
+  } else {
+    head = 'The common table left this profile exactly where it was.';
+    body = 'Old <b>' + AC_NAME[me.ac] + '</b> and the new common table both pay <b>' + ug_new + '</b> for a bachelor’s of ' +
+      me.ug.toFixed(2) + ' %, and Class 12 comes out level too. That is the narrow set the rewrite passed over; most profiles lose.';
+  }
+  $('acHeadline').innerHTML = head;
+  $('acBody').innerHTML = body +
+    '<ul class="tight">' +
+    '<li><b>CA, CS and CMA candidates are hit hardest.</b> AC-2 paid a full 10 above 63&nbsp;%; the new table pays 3 for the same aggregate. A seven-point swing, worth ' + f(7*rate,2) + ' percentile points.</li>' +
+    '<li><b>Engineering is not spared.</b> Old AC-4 paid 8 from 75 to 85&nbsp;%, where the new table pays 5 — a three-point loss in exactly the band most B.Tech aggregates land in.</li>' +
+    '<li><b>Commerce, economics and management lose the 80 line.</b> Old AC-3 paid a full 10 above 80&nbsp;%; the new table pays 8 there and reserves 10 for above 90.</li>' +
+    '<li><b>Arts and humanities lose the Class-12 cushion.</b> The old Arts table paid 10 above 85&nbsp;%; the new one demands 90.</li>' +
+    '<li>Across every academic category the rewrite is a loss or a wash. The only profile that gains is a low-scoring engineer in the 60–65 range.</li></ul>';
+
+  /* --- 3. what is locked and what is live --- */
+  var locked = [], live = [];
+  var lostP10 = (10-bandNew(me.p10))*rate, lostP12 = (10-bandNew(me.p12))*rate;
+  if(bandNew(me.p10)<10) locked.push({k:'Class 10', v:me.p10.toFixed(2)+' %', worth:lostP10, why:'board results are final'});
+  if(bandNew(me.p12)<10) locked.push({k:'Class 12', v:me.p12.toFixed(2)+' %', worth:lostP12, why:'board results are final'});
+  if(bandNew(me.ug)<10){
+    if(me.ugLive) live.push({k:'Bachelor’s', v:me.ug.toFixed(2)+' %', worth:(10-bandNew(me.ug))*rate,
+      how:'IIMA computes the aggregate from the latest available marksheets, so the figure on the form is not always the final one'});
+    else locked.push({k:'Bachelor’s', v:me.ug.toFixed(2)+' %', worth:(10-bandNew(me.ug))*rate, why:'marked as final'});
+  }
+  if(wx(me.wx)<5){
+    if(me.wxLive) live.push({k:'Work experience', v:me.wx+' months', worth:(5-wx(me.wx))*rate, how:'every month from the twelfth to the thirty-sixth adds 0.20 AR points'});
+    else locked.push({k:'Work experience', v:me.wx+' months', worth:(5-wx(me.wx))*rate, why:'no further months can accrue before the form closes'});
+  }
+  if(me.g==='m') locked.push({k:'Gender', v:'male', worth:3*rate, why:'not a variable'});
+
+  var lockedTotal = locked.reduce(function(a,b){return a+b.worth;},0);
+  var liveTotal   = live.reduce(function(a,b){return a+b.worth;},0);
+  var h = '';
+  if(locked.length===0 && live.length===0){
+    h = 'This profile is at the Application Rating ceiling — 38 out of 38. There is nothing left to buy, and every percentile point from here has to come out of CAT itself.';
+  } else {
+    h = 'Of the Application Rating this profile does not hold, <b>' + f(lockedTotal,2) + ' percentile ' + pl(lockedTotal,'point','points') +
+        '</b> ' + pl(locked.length,'is','are') + ' locked and <b class="isnew">' + f(liveTotal,2) + '</b> ' + pl(live.length,'is','are') +
+        ' still reachable. ' +
+        (lockedTotal > liveTotal*2
+          ? 'The larger number is the one that cannot be moved, which is the uncomfortable shape of this policy: most of the rating was decided before anyone started preparing for CAT.'
+          : 'Unusually, the reachable half is the larger one — there is real work available here.');
+    h += '<ul class="tight">';
+    live.forEach(function(l){
+      h += '<li><b>' + l.k + ' (' + l.v + ') is still live</b> — ' + l.how + '. Reaching the top band is worth <b class="isnew">' +
+           f(l.worth,2) + ' CAT percentile points</b>.</li>';
+    });
+    locked.forEach(function(l){
+      h += '<li><b>' + l.k + ' (' + l.v + ') is locked</b> — ' + l.why + '. That is <b>' + f(l.worth,2) +
+           ' percentile ' + pl(l.worth,'point','points') + '</b> conceded permanently to anyone who holds it.</li>';
+    });
+    h += '</ul>';
+    h += '<p style="margin:11px 0 0">Locked is not the same as irrelevant: it sets the height from which CAT has to start. ' +
+         'It does mean that effort spent grieving a closed boundary is effort not spent on an open one.</p>';
+  }
+  $('leverBody').innerHTML = h;
+}
+
+/* ── The divisor is not a constant ───────────────────────────────────
+   Every rating is divided by the average AR of the top 50 applicants. The
+   common table cut most people's rating, so that average should fall too —
+   and a smaller divisor makes each surviving point worth more. The two
+   effects pull in opposite directions and the page would be dishonest
+   showing only the first. Break-even divisor is where they cancel.
+   ────────────────────────────────────────────────────────────────── */
+function renderDivisor(){
+  var me = S.me, aN = arNew(me), aO = arOld(me), d = aO - aN;
+  var breakEven = aO > 0 ? OLD_DIV * aN / aO : NaN;
+  function net(T){ return (0.35*aN/T - 0.35*aO/OLD_DIV) * 100/0.65; }
+  function netElite(T){ return (0.35*AR_MAX/T - 0.35*AR_MAX/OLD_DIV) * 100/0.65; }
+
+  var rows = [38,37,36,35,34].map(function(T){
+    var mine = net(T), el = netElite(T);
+    return '<tr' + (T===Math.round(S.div)?' class="mine"':'') + '><td class="num">' + T + '</td>' +
+      '<td class="num">' + (0.35/T/0.0065).toFixed(3) + '</td>' +
+      '<td class="num ' + (mine<-0.005?'vnew':mine>0.005?'vold':'dim') + '">' + sgn(mine,2) + '</td>' +
+      '<td class="num ' + (el>0.005?'vold':'dim') + '">' + sgn(el,2) + '</td></tr>';
+  }).join('');
+
+  var head, lead;
+  if(d > 0.001){
+    head = 'Your rating fell ' + f(d,1) + ' ' + pl(d,'point','points') + ' — but so did the number it gets divided by.';
+    lead = 'Everything above holds the divisor at <b>38</b>, the published figure for the old cycle. That is almost certainly too high for the new one, and it matters in your favour.' +
+      '<ul class="tight">' +
+      '<li><b>The top of the pile did not move.</b> A candidate above 90 in all three marks with three years of work still scores the full 38, under either set of tables. The common table took nothing from them.</li>' +
+      '<li><b>But reaching the top got much harder.</b> The old tables had several routes to a perfect degree score — a CA needed only 63&nbsp;%, a management degree only 80&nbsp;%, an Arts Class&nbsp;12 only 85&nbsp;%. The new table has exactly one route: above 90, on all three. Fewer people get there.</li>' +
+      '<li><b>So the top-50 average should fall</b>, and it was already below the maximum in two of the three published years — 35 for 2024–26, 37 for 2025–27 — back when the tables were <em>more</em> generous.</li>' +
+      '<li><b>A smaller divisor makes every point you kept worth more.</b> That is the offset.</li></ul>' +
+      '<p style="margin:12px 0 6px">Where the two effects cancel for your profile:</p>' +
+      '<p class="bignum"><span class="mono">' + f(breakEven,2) + '</span> <span class="bignum-cap">break-even divisor</span></p>' +
+      '<p style="margin:0 0 12px">If the 2027–29 top-50 average lands there, the table rewrite costs you nothing. Above it you are worse off than under the old policy; below it you are better off. ' +
+      (breakEven < 34
+        ? 'At <b>' + f(breakEven,2) + '</b> that is a long way under every published figure, so on the evidence you stay worse off.'
+        : breakEven < 35
+        ? 'At <b>' + f(breakEven,2) + '</b> it sits just below the lowest ever published (35), so the loss is probably real but much smaller than the flat-38 figure suggests.'
+        : 'At <b>' + f(breakEven,2) + '</b> it is inside the published historical range, so this could genuinely go either way.') + '</p>';
+  } else if(d < -0.001){
+    head = 'Your rating rose ' + f(-d,1) + ' ' + pl(-d,'point','points') + ', and a falling divisor would add to that.';
+    lead = 'You are in the minority the common table helped. On top of that, the divisor — the average rating of the top 50 — should itself fall, because the new table makes a perfect rating much harder to reach than the old one did. A smaller divisor makes every point worth more, so both effects run your way.<p style="margin:12px 0 6px">Where your gain would have been zero:</p><p class="bignum"><span class="mono">' + f(breakEven,2) + '</span> <span class="bignum-cap">break-even divisor</span></p>';
+  } else {
+    head = 'Your rating did not move — so the divisor decides everything.';
+    lead = 'The common table left your rating exactly where it was, which means the only thing that changes your position is the divisor: the average rating of the top 50 applicants. The new table makes a perfect rating harder to reach, so that average should fall, and a smaller divisor makes every point you hold worth more. For you the rewrite is a straight gain in whatever amount the divisor drops.';
+  }
+  $('divHeadline').innerHTML = head;
+  $('divisorBody').innerHTML = lead +
+    '<div class="tw" style="margin-top:6px"><table><thead><tr>' +
+    '<th>Top-50 average</th><th>Worth of 1 AR point</th>' +
+    '<th>Net change for you</th><th>Net change at AR 38</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<p style="margin:12px 0 0"><b>Read the last column.</b> A candidate already at the maximum loses nothing to the table and <em>gains</em> from every point the divisor falls. ' +
+    'A candidate in the middle loses to the table first and only claws part of it back. The rewrite is not neutral between them — it costs the middle and pays the top.</p>' +
+    '<p style="margin:10px 0 0;font-size:12px;color:var(--muted)">The direction of the divisor move follows from the tables and is firm. The size is not: IIMA has never published it for 2027–29, and the figure above is the slider in chapter 2, not a fact.</p>';
+}
+
+/* ---------- chart ---------- */
+function renderQuality(){
+  var parts = [];
+  ['2022','2023','2024'].forEach(function(y){
+    var q = QUALITY[y]; if(!q) return;
+    parts.push('<b>CAT ' + y + '</b> — ' + q.n + ' rows, ' + q.dropped + ' rejected as outliers');
+  });
+  $('curveQuality').innerHTML = 'Where the curves come from: ' + parts.join(' &middot; ') +
+    '. For CAT 2025 there is no public scorecard dataset at all, so every 2025 option is an estimate. ' +
+    '<b>Cracku</b> publishes a full table from the 55th to the 99.99th and is reproduced here exactly, smoothed between its anchors by shape-preserving interpolation that cannot overshoot them. ' +
+    '<b>IMS</b> publishes from the 80th to the 99.9th. Below each provider’s lowest published anchor the curve borrows the 2023/24 proxy’s shape, so treat the bottom tail as illustrative. ' +
+    'The default averages IMS and Cracku, which disagree by about ' + Math.abs(CURVES['2025ims'][GRID.indexOf(95)] - CURVES['2025cracku'][GRID.indexOf(95)]).toFixed(1) +
+    ' marks at the 95th and ' + Math.abs(CURVES['2025ims'][GRID.indexOf(99)] - CURVES['2025cracku'][GRID.indexOf(99)]).toFixed(1) +
+    ' at the 99th — that spread is the honest width of the uncertainty.';
+}
+
+function renderChart(){
+  var W=760,H=310,PL=70,PR=18,PT=16,PB=42;
+  var x0 = floorPct(), x1 = 99.9;
+  var step = (x1-x0)/220, xs=[], i;
+  for(i=0;i<=220;i++) xs.push(x0 + i*step);
+  var R = S.rival;
+  var sNew = xs.map(function(x){ return newGapAt(R,x); });
+  var sOld = xs.map(function(x){ return oldGapPctAt(R,x); });
+  var all  = sNew.concat(sOld);
+  var ymax = Math.max(0.5, Math.ceil(Math.max.apply(null,all)*1.15*4)/4);
+  var ymin = Math.min(0, Math.floor(Math.min.apply(null,all)*4)/4);
+  function px(x){ return PL + (x-x0)/(x1-x0)*(W-PL-PR); }
+  function py(y){ return PT + (ymax-y)/((ymax-ymin)||1)*(H-PT-PB); }
+  function path(arr){ return arr.map(function(v,k){ return (k?'L':'M')+px(xs[k]).toFixed(1)+' '+py(v).toFixed(1); }).join(' '); }
+
+  var span = x1-x0, ticks=[], t, k;
+  var candidates = [x0, x0+span*0.25, x0+span*0.5, x0+span*0.7, x0+span*0.86, x1];
+  var minSep = span*0.07;
+  for(i=0;i<candidates.length;i++){
+    t = Math.round(candidates[i]*10)/10;
+    if(t < x0-0.01 || t > x1+0.01) continue;
+    var clash = false;
+    for(k=0;k<ticks.length;k++){ if(Math.abs(ticks[k]-t) < minSep){ clash = true; break; } }
+    if(!clash) ticks.push(t);
+  }
+  function tickLabel(v){ return (Math.abs(v-Math.round(v))<0.05) ? String(Math.round(v)) : v.toFixed(1); }
+  var gY=[], nY=5;
+  for(i=0;i<=nY;i++) gY.push(ymin + (ymax-ymin)*i/nY);
+
+  var s = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:100%;height:auto;display:block" role="img" ' +
+          'aria-label="Percentile worth of the rival advantage plotted against your operating percentile. The new-policy line is flat and solid; the old-policy line is dashed and falls away as the curve steepens.">';
+  gY.forEach(function(v){
+    s += '<line x1="'+PL+'" y1="'+py(v).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+py(v).toFixed(1)+'" stroke="#252b2e" stroke-width="1"/>';
+    s += '<text x="'+(PL-10)+'" y="'+(py(v)+4).toFixed(1)+'" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#8b969b">'+v.toFixed(2)+'</text>';
+  });
+  if(ymin<0 && ymax>0){
+    s += '<line x1="'+PL+'" y1="'+py(0).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+py(0).toFixed(1)+'" stroke="#394246" stroke-width="1"/>';
+  }
+  ticks.forEach(function(tk){
+    s += '<text x="'+px(tk).toFixed(1)+'" y="'+(H-PB+18)+'" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#8b969b">'+tickLabel(tk)+'</text>';
+  });
+  s += '<text x="'+(PL+(W-PL-PR)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#8b969b">Your CAT percentile — from the published '+esc(S.me.cat)+' floor of '+x0+' upward</text>';
+  s += '<text transform="translate(14,'+(PT+(H-PT-PB)/2)+') rotate(-90)" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#8b969b">Rival lead, in percentile points</text>';
+  s += '<line x1="'+px(S.op).toFixed(1)+'" y1="'+PT+'" x2="'+px(S.op).toFixed(1)+'" y2="'+(H-PB)+'" stroke="#8b969b" stroke-width="1.5" stroke-dasharray="2 2"/>';
+  /* OLD: dashed. NEW: solid. Redundant with colour. */
+  s += '<path d="'+path(sOld)+'" fill="none" stroke="#35c46a" stroke-width="2.4" stroke-dasharray="7 4.5" stroke-linejoin="round" stroke-linecap="round"/>';
+  s += '<path d="'+path(sNew)+'" fill="none" stroke="#ff5a52" stroke-width="2.4" stroke-linejoin="round"/>';
+  var gN=newGapAt(R,S.op), gP=oldGapPctAt(R,S.op);
+  s += '<circle cx="'+px(S.op).toFixed(1)+'" cy="'+py(gP).toFixed(1)+'" r="4" fill="#0d1012" stroke="#35c46a" stroke-width="2"/>';
+  s += '<circle cx="'+px(S.op).toFixed(1)+'" cy="'+py(gN).toFixed(1)+'" r="4" fill="#ff5a52"/>';
+  s += '</svg>';
+  $('chart').innerHTML = s;
+
+  var lo = x0, hi = 99;
+  var mLo = oldGapPctAt(R,lo), mHi = oldGapPctAt(R,hi);
+  $('chartNote').innerHTML = (Math.abs(oldGapMarks(R))<0.01)
+    ? 'Under the old tables this rival gained nothing at all, which is why the dashed line sits flat on zero. Every bit of the solid line is created by the new rules.'
+    : 'The solid line is flat because a percentile is a percentile wherever you stand. The dashed line slides downwards because the old rules paid in <em>marks</em>, and marks get much harder to earn near the top: the same <b class="isold">' +
+      oldGapMarks(R).toFixed(1) + '-mark</b> lead was worth ' + mLo.toFixed(2) + ' percentile at the ' + lo +
+      'th but only ' + mHi.toFixed(2) + ' at the 99th. ' + (function(c){
+        if(c===null)      return 'The lines never cross in this range — the new policy is harsher on you at every percentile shown.';
+        if(c===undefined) return 'The lines never cross in this range — the old policy was harsher on you at every percentile shown.';
+        return 'They cross near <b>' + c.toFixed(1) + '</b>: below that the old policy was harsher on you, above it the new one is.';
+      })(crossPoint(R));
+}
+function crossPoint(R){
+  var x0 = floorPct();
+  if(oldGapPctAt(R,x0) <= newGapAt(R,x0)) return null;
+  for(var x=x0;x<=99.9;x+=0.05){ if(oldGapPctAt(R,x) <= newGapAt(R,x)) return x; }
+  return undefined;
+}
+
+function renderRail(){
+  $('railMeN').textContent = arNew(S.me).toFixed(1);
+  $('railMeO').textContent = arOld(S.me).toFixed(1);
+  $('railRvN').textContent = arNew(S.rival).toFixed(1);
+  $('railRvO').textContent = arOld(S.rival).toFixed(1);
+  $('railCat').textContent = S.me.cat + ' · floor ' + floorPct();
+  $('railOp').textContent  = S.op.toFixed(2);
+}
+
+function renderAll(){
+  renderRates(); renderVerdict(); renderEquiv(); renderArch();
+  renderCuts(); renderBands(); renderStructural(); renderDivisor(); renderChart(); renderQuality(); renderRail();
+}
+
+/* ============================================================
+   INPUT WIRING
+   ============================================================ */
+var LIMITS = {
+  'me.p10':[0,100],'me.p12':[0,100],'me.ug':[0,100],'me.wx':[0,600],
+  'rival.p10':[0,100],'rival.p12':[0,100],'rival.ug':[0,100],'rival.wx':[0,600],
+  op:[50,99.99], div:[30,38], disc:[0.5,2]
+};
+var ENUMS = {
+  stream:['Science','Commerce','Arts'],
+  ac:['AC-1','AC-2','AC-3','AC-4','AC-5'],
+  g:['m','f'],
+  cat:CAT_KEYS,
+  curve:['2022','2023','2024','2025p','2025ims','2025cracku','2025mean']
+};
+function setPath(key, v){
+  if(key.indexOf('me.')===0)         S.me[key.slice(3)] = v;
+  else if(key.indexOf('rival.')===0) S.rival[key.slice(6)] = v;
+  else                               S[key] = v;
+}
+function bind(id, key, kind){
+  var el = $(id); if(!el) return;
+  el.addEventListener('input', function(){
+    if(kind==='num'){
+      var raw = el.value;
+      /* never truncate a decimal that is still being typed */
+      if(raw === '' || raw === '-' || /[.,]$/.test(raw)) return;
+      var v = parseFloat(raw);
+      if(!isFinite(v)) return;
+      var lim = LIMITS[key];
+      if(lim){
+        var c = clamp(v, lim[0], lim[1]);
+        if(c !== v){
+          /* Don't fight the user mid-keystroke. A partial entry can sit below the
+             floor and still be on its way somewhere valid — typing "99" into a
+             field with a minimum of 95 passes through "9" first. Rewriting the
+             field there turns it into "959". Wait until enough digits exist. */
+          var digits = raw.replace(/[^0-9]/g,'').length;
+          var floorDigits = String(Math.floor(lim[0])).length;
+          if(v < lim[0] && digits < floorDigits) return;
+          v = c; el.value = c;
+        }
+      }
+      setPath(key, v);
+    } else if(kind==='bool'){
+      setPath(key, el.checked);
+    } else {
+      setPath(key, el.value);
+    }
+    if(key==='me.cat' && S.op < floorPct()) S.op = floorPct();
+    syncInputs(el); renderAll(); writeHash();
+  });
+}
+function syncInputs(skip){
+  var m=S.me, r=S.rival;
+  function set(id, val){
+    var el = $(id); if(!el || el === skip) return;
+    if(String(el.value) !== String(val)) el.value = val;
+  }
+  function chk(id, val){ var el=$(id); if(el && el!==skip) el.checked = !!val; }
+  set('m10',m.p10); set('m12',m.p12); set('mStream',m.stream); set('mUG',m.ug);
+  set('mAC',m.ac); set('mWx',m.wx); set('mGen',m.g); set('mCat',m.cat);
+  chk('mUgLive',m.ugLive); chk('mWxLive',m.wxLive);
+  set('r10',r.p10); set('r12',r.p12); set('rStream',r.stream); set('rUG',r.ug);
+  set('rAC',r.ac); set('rWx',r.wx); set('rGen',r.g);
+  set('opPct',S.op); set('opPctR',S.op); set('railOpR',S.op); set('anchorPct',S.op);
+  var am = S.anchor!=='rival';
+  $('anchorMe').setAttribute('aria-pressed',String(am));
+  $('anchorRival').setAttribute('aria-pressed',String(!am));
+  set('curveSel',S.curve); set('arDiv',S.div); set('arDivR',S.div);
+  set('discR',S.disc); set('discRR',S.disc);
+
+  var fl = floorPct();
+  ['opPctR','railOpR'].forEach(function(id){ var el=$(id); if(el) el.min = fl; });
+  var op = $('opPct'); if(op) op.min = fl;
+
+  $('arMeNew').textContent    = arNew(m).toFixed(1);
+  $('arMeOld').textContent    = arOld(m).toFixed(1);
+  $('arRivalNew').textContent = arNew(r).toFixed(1);
+  $('arRivalOld').textContent = arOld(r).toFixed(1);
+  function delta(el, p){
+    var d = arOld(p) - arNew(p);
+    el.textContent = (Math.abs(d)<0.005 ? 'level' : sgn(-d,1));
+    el.style.color = Math.abs(d)<0.005 ? 'var(--muted)' : 'var(--ink)';
+  }
+  delta($('arMeDelta'), m); delta($('arRivalDelta'), r);
+
+  document.querySelectorAll('#presets .chip').forEach(function(c,i){
+    c.setAttribute('aria-pressed', String(samePreset(PRESETS[i].p)));
+  });
+}
+function samePreset(p){
+  var t = mk(p);
+  return ['p10','p12','stream','ug','ac','wx','g'].every(function(k){ return S.rival[k]===t[k]; });
+}
+
+bind('m10','me.p10','num');   bind('m12','me.p12','num');   bind('mUG','me.ug','num');
+bind('mWx','me.wx','num');    bind('mStream','me.stream');  bind('mAC','me.ac');
+bind('mGen','me.g');          bind('mCat','me.cat');
+bind('mUgLive','me.ugLive','bool'); bind('mWxLive','me.wxLive','bool');
+bind('r10','rival.p10','num'); bind('r12','rival.p12','num'); bind('rUG','rival.ug','num');
+bind('rWx','rival.wx','num');  bind('rStream','rival.stream'); bind('rAC','rival.ac'); bind('rGen','rival.g');
+bind('opPct','op','num');  bind('opPctR','op','num');  bind('railOpR','op','num');
+bind('anchorPct','op','num');
+bind('curveSel','curve');  bind('arDiv','div','num');  bind('arDivR','div','num');
+bind('discR','disc','num');bind('discRR','disc','num');
+
+/* category selector options */
+(function(){
+  var sel = $('mCat'), html='';
+  CAT_KEYS.forEach(function(k){
+    html += '<option value="'+esc(k)+'">'+esc(k)+' — CAT floor '+CATS[k].pt+'</option>';
+  });
+  sel.innerHTML = html;
+})();
+
+/* presets */
+(function(){
+  var ph = $('presets');
+  PRESETS.forEach(function(pr){
+    var b = document.createElement('button');
+    b.className='chip'; b.type='button'; b.textContent=pr.n; b.setAttribute('aria-pressed','false');
+    b.addEventListener('click', function(){ S.rival = mk(pr.p); syncInputs(); renderAll(); writeHash(); });
+    ph.appendChild(b);
+  });
+})();
+
+/* anchor toggle for the equivalence table */
+['anchorMe','anchorRival'].forEach(function(id){
+  $(id).addEventListener('click', function(){
+    S.anchor = (id==='anchorRival') ? 'rival' : 'me';
+    syncInputs(); renderAll(); writeHash();
+  });
+});
+
+/* mirror + reset */
+$('mirror').addEventListener('click', function(){
+  S.rival = mk({}); syncInputs(); renderAll(); writeHash();
+});
+$('resetMe').addEventListener('click', function(){
+  S.me = cp(DEF_ME); S.rival = cp(DEF_RV); S.op = 95; S.curve='2025mean'; S.div=38; S.disc=1.00; S.anchor='me';
+  syncInputs(); renderAll(); writeHash();
+});
+
+/* archetype rows load into the rival panel */
+(function(){
+  var tb = document.querySelector('#archTable tbody');
+  function load(tr){
+    var i = parseInt(tr.getAttribute('data-arch'),10);
+    if(isNaN(i) || !ARCH[i]) return;
+    S.rival = archProfile(ARCH[i]); syncInputs(); renderAll(); writeHash();
+  }
+  tb.addEventListener('click', function(e){ var tr=e.target.closest('tr[data-arch]'); if(tr) load(tr); });
+  tb.addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var tr = e.target.closest('tr[data-arch]'); if(!tr) return;
+    e.preventDefault(); load(tr);
+  });
+})();
+
+/* ============================================================
+   CHAPTERS
+   ============================================================ */
+var TABS = [], PANES = [];
+(function(){
+  var i;
+  for(i=1;i<=6;i++){ TABS.push($('tab'+i)); PANES.push($('ch'+i)); }
+  function show(n, focus){
+    TABS.forEach(function(t,k){ t.setAttribute('aria-selected', String(k===n)); });
+    PANES.forEach(function(p,k){ p.hidden = (k!==n); });
+    $('rail').style.display = (n===0 || n===5) ? 'none' : '';
+    if(focus) PANES[n].focus({preventScroll:true});
+    try{ history.replaceState(null,'', '#'+buildHash(n)); }catch(e){}
+    window.scrollTo({top:0, behavior:'instant' in document.documentElement.style ? 'instant' : 'auto'});
+  }
+  TABS.forEach(function(t,k){
+    t.addEventListener('click', function(){ show(k,false); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key==='ArrowRight' ? 1 : e.key==='ArrowLeft' ? -1 : 0;
+      if(!d) return;
+      e.preventDefault();
+      var n = (k+d+6)%6; TABS[n].focus(); show(n,false);
+    });
+  });
+  window.__showChapter = show;
+})();
+
+/* ============================================================
+   URL STATE  — fragment only, never transmitted
+   ============================================================ */
+var curChapter = 0;
+function buildHash(chapter){
+  if(typeof chapter === 'number') curChapter = chapter;
+  var m=S.me, r=S.rival;
+  return 'c='+(curChapter+1) +
+    '&me='+[m.p10,m.p12,m.stream,m.ug,m.ac,m.wx,m.g,m.cat.replace(/ /g,'_'),m.ugLive?1:0,m.wxLive?1:0].join('~') +
+    '&rv='+[r.p10,r.p12,r.stream,r.ug,r.ac,r.wx,r.g].join('~') +
+    '&op='+S.op+'&cv='+S.curve+'&dv='+S.div+'&ds='+S.disc+'&an='+(S.anchor==='rival'?'r':'m');
+}
+function writeHash(){ try{ history.replaceState(null,'', '#'+buildHash()); }catch(e){} }
+
+function num(v, lo, hi, dflt){ var n=parseFloat(v); return isFinite(n) ? clamp(n,lo,hi) : dflt; }
+function enu(v, list, dflt){ return list.indexOf(v)>=0 ? v : dflt; }
+
+function readHash(){
+  var h = (location.hash||'').replace(/^#/,'');
+  if(!h) return 0;
+  var q={}, parts=h.split('&'), i, kv;
+  for(i=0;i<parts.length;i++){ kv=parts[i].split('='); if(kv.length===2) q[kv[0]]=decodeURIComponent(kv[1]); }
+  if(q.me){
+    var a=q.me.split('~');
+    if(a.length>=8){
+      S.me.p10    = num(a[0],0,100,DEF_ME.p10);
+      S.me.p12    = num(a[1],0,100,DEF_ME.p12);
+      S.me.stream = enu(a[2],ENUMS.stream,DEF_ME.stream);
+      S.me.ug     = num(a[3],0,100,DEF_ME.ug);
+      S.me.ac     = enu(a[4],ENUMS.ac,DEF_ME.ac);
+      S.me.wx     = num(a[5],0,600,DEF_ME.wx);
+      S.me.g      = enu(a[6],ENUMS.g,DEF_ME.g);
+      S.me.cat    = enu(String(a[7]).replace(/_/g,' '),ENUMS.cat,DEF_ME.cat);
+      S.me.ugLive = a[8]==='1';
+      S.me.wxLive = a[9]==='1';
+    }
+  }
+  if(q.rv){
+    var b=q.rv.split('~');
+    if(b.length>=7){
+      S.rival.p10=num(b[0],0,100,DEF_RV.p10); S.rival.p12=num(b[1],0,100,DEF_RV.p12);
+      S.rival.stream=enu(b[2],ENUMS.stream,DEF_RV.stream); S.rival.ug=num(b[3],0,100,DEF_RV.ug);
+      S.rival.ac=enu(b[4],ENUMS.ac,DEF_RV.ac); S.rival.wx=num(b[5],0,600,DEF_RV.wx);
+      S.rival.g=enu(b[6],ENUMS.g,DEF_RV.g);
+    }
+  }
+  if(q.op) S.op    = num(q.op,50,99.99,95);
+  if(q.cv) S.curve = enu(q.cv,ENUMS.curve,'2025mean');
+  if(q.dv) S.div   = num(q.dv,30,38,38);
+  if(q.ds) S.disc  = num(q.ds,0.5,2,1);
+  if(q.an) S.anchor = (q.an==='r') ? 'rival' : 'me';
+  if(S.op < floorPct()) S.op = floorPct();
+  var c = parseInt(q.c,10);
+  return (c>=1 && c<=6) ? c-1 : 0;
+}
+
+/* permalink button, built here so the markup stays declarative */
+(function(){
+  var b = document.createElement('button');
+  b.className='btn'; b.type='button'; b.textContent='Copy permalink';
+  b.style.marginLeft='auto';
+  b.addEventListener('click', function(){
+    var url = location.origin + location.pathname + '#' + buildHash();
+    var done = function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy permalink'; },1400); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done, function(){ b.textContent='Press Ctrl+C'; });
+    } else {
+      try{ history.replaceState(null,'', '#'+buildHash()); b.textContent='URL updated';
+           setTimeout(function(){ b.textContent='Copy permalink'; },1400); }catch(e){}
+    }
+  });
+  $('rail').appendChild(b);
+})();
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+var startChapter = readHash();
+syncInputs();
+renderAll();
+window.__showChapter(startChapter, false);
+})();
+</script>
+
+</body>
+</html>
